@@ -28,8 +28,7 @@ public interface GenericMapper<T extends BaseModel<PK>, TE extends BaseModelExam
 
 	T selectByPrimaryKey(PK id);
 
-	int updateByExampleSelective(@Param("record") T record,
-			@Param("example") TE example);
+	int updateByExampleSelective(@Param("record") T record, @Param("example") TE example);
 
 	int updateByExample(@Param("record") T record, @Param("example") TE example);
 
