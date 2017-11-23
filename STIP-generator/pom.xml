@@ -5,9 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.514687572</groupId>
 	<artifactId>STIP-generator</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<name>STIP-generator</name>
 	<url>http://maven.apache.org</url>
+	
+	<description>mybatis generator plugin</description>
 
 	<repositories>
 		<repository>
@@ -67,8 +69,8 @@
 	</licenses>
 
 	<scm>
-		<url>https://github.com/514687572/BEYOND/tree/master/STIP-parent/STIP-generator</url>
-		<connection>https://github.com/514687572/BEYOND.git</connection>
+		<url>https://github.com/514687572/STIP-generator.git</url>
+		<connection>https://github.com/514687572/STIP-generator.git</connection>
 		<developerConnection>https://github.com/514687572</developerConnection>
 	</scm>
 
