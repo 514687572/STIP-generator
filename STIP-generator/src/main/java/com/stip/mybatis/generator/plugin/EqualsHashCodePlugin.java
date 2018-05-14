@@ -3,9 +3,9 @@ package com.stip.mybatis.generator.plugin;
 import java.util.Iterator;
 import java.util.List;
 
-import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;

@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.mybatis.generator.api.GeneratedXmlFile;
-import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.ShellCallback;
@@ -22,6 +21,7 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.XmlConstants;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
@@ -30,7 +30,7 @@ import org.mybatis.generator.internal.util.StringUtility;
  * 
  * 定制部分mybatis的插件，主要实现以下功能
  * <ol>
- * <li>生成Model和Example的Base文件</li>
+ * <li>生成Example的文件</li>
  * <li>生成新的sqlmap并覆盖xml文件</li>
  * <li>生成空的sqlmap custom的xml文件，不覆盖原来的，如果没有则创建空的</li>
  * </ol>
@@ -43,20 +43,14 @@ import org.mybatis.generator.internal.util.StringUtility;
  * @author cja
  *
  **/
-public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
+public class ExampleClassPlugin extends PluginAdapter {
 
-    public final static String DEFAULT_BASE_MODEL_PACKAGE = "base";
-    public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "B";
+    public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
+    public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
     private final static String DEFAULT_EXT_XML_PACKAGE = "ext";
 
     private ShellCallback shellCallback = null;
-
-    /**
-     * Model的基类
-     */
-    private String baseModelSuperClass = "BaseModel";
-    private String baseModelSuperClassName = "com.stip.mybatis.generator.plugin.BaseModel";
 
     /**
      * Example的基类
@@ -74,6 +68,15 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
      * Model类的前缀名称
      */
     private String baseModelNamePrefix;
+    /**
+     * Model类的前缀名称
+     */
+    private String exampleTargetPackage;
+    
+    /**
+     * Model类的前缀名称
+     */
+    private String modelTargetPackage;
 
     /**
      * Model类文件包名
@@ -101,7 +104,7 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
     private String modelClassName;
     private String exampleClassName;
 
-    public ModelAndExampleBaseClassPlugin() {
+    public ExampleClassPlugin() {
         shellCallback = new DefaultShellCallback(false);
 
         try {
@@ -120,13 +123,15 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
     public void initialized(IntrospectedTable introspectedTable) {
         // 初始化两参数为空
         modelClassName = null;
-        exampleClassName = null;
 
         modelClassName = introspectedTable.getBaseRecordType();
         introspectedTable.setBaseRecordType(genBaseClassName(modelClassName));
-
-        exampleClassName = introspectedTable.getExampleType();
-        introspectedTable.setExampleType(genBaseClassName(exampleClassName));
+        
+        String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
+        String modelTargetPackage = properties.getProperty("modelTargetPackage");
+        exampleClassName=introspectedTable.getExampleType().replaceAll(modelTargetPackage, "");
+        exampleClassName=exampleTargetPackage+exampleClassName;
+        introspectedTable.setExampleType(exampleClassName);
     }
 
     /*
@@ -142,16 +147,16 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
             baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
 
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        if (!StringUtility.stringHasValue(modelTargetPackage)) {
+        String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
+        if (!StringUtility.stringHasValue(exampleTargetPackage)) {
             return false;
         }
 
-        String baseModelPackage = properties.getProperty("baseModelPackage");
-        if (StringUtility.stringHasValue(baseModelPackage)) {
-            fullModelPackage = modelTargetPackage + "." + baseModelPackage;
+        String baseExamplePackage = properties.getProperty("baseExamplePackage");
+        if (StringUtility.stringHasValue(baseExamplePackage)) {
+            fullModelPackage = exampleTargetPackage + "." + baseExamplePackage;
         } else {
-            fullModelPackage = modelTargetPackage + "." + DEFAULT_BASE_MODEL_PACKAGE;
+            fullModelPackage = exampleTargetPackage + "." + DEFAULT_BASE_MODEL_PACKAGE;
         }
 
         String xmlTargetPackage = properties.getProperty("xmlTargetPackage");
@@ -164,11 +169,6 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
             fullExtXmlPackage = xmlTargetPackage + "." + extXmlPackage;
         } else {
             fullExtXmlPackage = xmlTargetPackage + "." + DEFAULT_EXT_XML_PACKAGE;
-        }
-
-        String baseModelSuperClazz = properties.getProperty("baseModelSuperClass");
-        if (StringUtility.stringHasValue(baseModelSuperClazz)) {
-            baseModelSuperClass = baseModelSuperClazz;
         }
 
         String pkColumnName = properties.getProperty("pkColumnName");
@@ -221,8 +221,7 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
                 e.printStackTrace();
             }
 
-            Document document = new Document(XmlConstants.MYBATIS3_MAPPER_PUBLIC_ID,
-                    XmlConstants.MYBATIS3_MAPPER_SYSTEM_ID);
+            Document document = new Document(XmlConstants.MYBATIS3_MAPPER_PUBLIC_ID,XmlConstants.MYBATIS3_MAPPER_SYSTEM_ID);
             XmlElement root = new XmlElement("mapper");
             document.setRootElement(root);
 
@@ -248,8 +247,7 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
                 File targetFile = new File(directory, fileName);
 
                 if (!targetFile.exists()) {// 需要判断这个xml文件是否存在，若存在则不生成
-                    GeneratedXmlFile gxf = new GeneratedXmlFile(document, fileName, fullExtXmlPackage, targetProject,
-                            true, context.getXmlFormatter());
+                    GeneratedXmlFile gxf = new GeneratedXmlFile(document, fileName, fullExtXmlPackage, targetProject,true, context.getXmlFormatter());
                     extXmlFiles.add(gxf);
                 }
             } catch (ShellException e) {
@@ -264,79 +262,28 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
         return extXmlFiles;
     }
 
-    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        System.out.println("===============开始：修改Model文件================");
-
-        // 添加基类
-        FullyQualifiedJavaType superClazzType = new FullyQualifiedJavaType(baseModelSuperClass);
-        FullyQualifiedJavaType superClazzTypeName = new FullyQualifiedJavaType(baseModelSuperClassName);
-        topLevelClass.addImportedType(superClazzTypeName);
-
-        FullyQualifiedJavaType pkType = null;
-        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
-        if (primaryKeyColumns.isEmpty()) {
-            pkType = new FullyQualifiedJavaType("java.lang.String");//没有主键的表，默认使用字符串作为主键类型
-        } else {
-            pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();//TODO:默认不考虑联合主键的情况
-            System.out.println("primaryKey Type:" + pkType);
-        }
-
-        superClazzType.addTypeArgument(pkType);
-        System.out.println("Model基类：" + superClazzType.toString());
-        topLevelClass.setSuperClass(superClazzType);
-
-        clearModelCLass(topLevelClass);
-
-        System.out.println("===============完成：修改Model文件================");
-
-        return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
-    }
-
-    /**
-     * 清理Example的多余属性与方法，已经迁移到父类了
-     * 
-     * @param topLevelClass
-     */
-    private void clearModelCLass(TopLevelClass topLevelClass) {
-
-        System.out.println("开始清理Model的TopLevelCLass多余属性");
-
-        HashSet<Field> removingFields = new HashSet<Field>();
-
-        List<Field> fields = topLevelClass.getFields();
-        for (Field field : fields) {
-            String fieldName = field.getName();
-            if (modelPKColumnName.equals(fieldName)) {// 将要删除的变量
-                System.out.println("removing field:" + fieldName);
-                removingFields.add(field);
-            }
-        }
-        fields.removeAll(removingFields);
-
-        HashSet<Method> removingMethods = new HashSet<Method>();
-
-        String pkSetter = "set" + capitalize(modelPKColumnName);
-        String pkGetter = "get" + capitalize(modelPKColumnName);
-        
-        List<Method> methods = topLevelClass.getMethods();
-        for (Method method : methods) {
-            String methodName = method.getName();
-
-            if (pkSetter.equals(methodName) || pkGetter.equals(methodName)) {// 将要删除的方法
-                System.out.println("removing method:" + methodName);
-                removingMethods.add(method);
-            }
-        }
-        methods.removeAll(removingMethods);
-    }
-
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         System.out.println("===============开始：修改Example文件================");
+        
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        String exampleTargetProject = properties.getProperty("exampleTargetProject");
+        String targetPackage = exampleTargetPackage; //$NON-NLS-1$
+        String targetProject = exampleTargetProject; //$NON-NLS-1$
+
+        if (StringUtility.stringHasValue(targetPackage)) {
+        	javaModelGeneratorConfiguration.setTargetPackage(targetPackage);
+        }
+        
+        if (StringUtility.stringHasValue(targetProject)) {
+        	javaModelGeneratorConfiguration.setTargetProject(targetProject);
+        }
+        
+        introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         // 添加example基类
         topLevelClass.addImportedType(new FullyQualifiedJavaType(baseExampleSuperClassName));
         topLevelClass.setSuperClass(baseExampleSuperClass);
-
+        
         clearExampleCLass(topLevelClass);
 
         HashSet<InnerClass> removingInnerClasses = new HashSet<InnerClass>();
@@ -458,7 +405,15 @@ public class ModelAndExampleBaseClassPlugin extends PluginAdapter {
      */
     private String genBaseClassName(String oldModelType) {
         int indexOfLastDot = oldModelType.lastIndexOf('.');
-        return fullModelPackage + "." + baseModelNamePrefix + oldModelType.substring(indexOfLastDot + 1);
+        String className="";
+        
+        if("".equals(baseModelNamePrefix)) {
+        	className=fullModelPackage + oldModelType.substring(indexOfLastDot + 1);
+        }else {
+        	className=fullModelPackage + "." + baseModelNamePrefix + oldModelType.substring(indexOfLastDot + 1);
+        }
+        
+        return className;
     }
 
     public static String capitalize(final String str) {

@@ -28,6 +28,9 @@ public class MapperPlugin extends PluginAdapter {
 
     private static final String DEFAULT_DAO_SUPER_CLASS = "GenericMapper";
     private static final String DEFAULT_DAO_SUPER_CLASS_NAME = "com.stip.mybatis.generator.plugin.GenericMapper";
+    
+    public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
+    public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
     private ShellCallback shellCallback = null;
 
@@ -65,12 +68,12 @@ public class MapperPlugin extends PluginAdapter {
 
         baseModelPackage = properties.getProperty("baseModelPackage");
         if (!StringUtility.stringHasValue(baseModelPackage)) {
-            baseModelPackage = ModelAndExampleBaseClassPlugin.DEFAULT_BASE_MODEL_PACKAGE;
+            baseModelPackage = DEFAULT_BASE_MODEL_PACKAGE;
         }
 
         baseModelNamePrefix = properties.getProperty("baseModelNamePrefix");
         if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
-            baseModelNamePrefix = ModelAndExampleBaseClassPlugin.DEFAULT_BASE_MODEL_NAME_PREFIX;
+            baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
 
         return valid && valid2;
@@ -92,29 +95,32 @@ public class MapperPlugin extends PluginAdapter {
         }
 
         List<GeneratedJavaFile> mapperJavaFiles = new ArrayList<GeneratedJavaFile>();
+        String subModelName ="";
+        String subModelExampleType="";
+        String subModelType="";
+        
         for (GeneratedJavaFile javaFile : introspectedTable.getGeneratedJavaFiles()) {
-
-            CompilationUnit unit = javaFile.getCompilationUnit();
-            FullyQualifiedJavaType baseModelJavaType = unit.getType();
-
-            String shortName = baseModelJavaType.getShortName();
+        	CompilationUnit unit = javaFile.getCompilationUnit();
+        	FullyQualifiedJavaType baseModelJavaType = unit.getType();
+        	
+        	String shortName = baseModelJavaType.getShortName();
 
             if (shortName.endsWith("Example")) {// 针对Example类不要生成Mapper
-                continue;
+            	String subExampleType = getSubModelType(baseModelJavaType);
+            	subModelExampleType = subExampleType;
+            }else {
+            	subModelType = getSubModelType(baseModelJavaType);
+            	System.out.println("shortName:" + shortName);
+            	subModelName = shortName.replace(baseModelNamePrefix, "");
             }
 
-            String subModelType = getSubModelType(baseModelJavaType);
-            String subModelExampleType = subModelType + "Example";
-
-            System.out.println("shortName:" + shortName);
-
-            String subModelName = shortName.replace(baseModelNamePrefix, "");
-
+        }
+        
             Interface mapperInterface = new Interface(daoTargetPackage + "." + subModelName + "Dao");
 
             mapperInterface.setVisibility(JavaVisibility.PUBLIC);
             mapperInterface.addJavaDocLine(" /**");
-            mapperInterface.addJavaDocLine(" * generator XML");
+            mapperInterface.addJavaDocLine(" * 可添加自定义查询语句，方便后续扩展");
             mapperInterface.addJavaDocLine(" **/");
 
             FullyQualifiedJavaType subModelJavaType = new FullyQualifiedJavaType(subModelType);
@@ -140,14 +146,12 @@ public class MapperPlugin extends PluginAdapter {
 
                 // 文件不存在
                 if (!mapperFile.exists()) {
-
                     mapperJavaFiles.add(mapperJavafile);
                 }
             } catch (ShellException e) {
                 e.printStackTrace();
             }
 
-        }
 
         System.out.println("===============结束：生成Mapper文件================");
 
@@ -157,7 +161,8 @@ public class MapperPlugin extends PluginAdapter {
     private String getSubModelType(FullyQualifiedJavaType fullyQualifiedJavaType) {
         String type = fullyQualifiedJavaType.getFullyQualifiedName();
         String defaultPrefix = baseModelPackage + "." + baseModelNamePrefix;
-        String newType = type.replace(defaultPrefix, "");
+        String newType = type.replace("..", ".");
+        
         return newType;
     }
 }
