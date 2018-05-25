@@ -33,7 +33,7 @@ generatorConfig.xml插件类配置
 		<dependency>
 			<groupId>com.github.514687572</groupId>
 			<artifactId>STIP-generator</artifactId>
-			<version>1.0.3</version>
+			<version>1.0.4</version>
 		</dependency>
 	</dependencies>
 	<configuration>
