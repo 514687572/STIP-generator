@@ -59,6 +59,6 @@
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
-        <table tableName="Users" alias="users" mapperName="UsersDao" domainObjectName="Users"></table>
+        <table tableName="Users" alias="users" mapperName="UsersDao" domainObjectName="Users" ></table>
 	</context>
 </generatorConfiguration>
