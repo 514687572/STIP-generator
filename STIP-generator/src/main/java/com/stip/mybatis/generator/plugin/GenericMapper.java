@@ -35,5 +35,7 @@ public interface GenericMapper<T extends BaseModel<PK>, TE extends BaseModelExam
 	int updateByPrimaryKeySelective(T record);
 
 	int updateByPrimaryKey(T record);
+	
+	int batchInsert(List<T> records);
 
 }

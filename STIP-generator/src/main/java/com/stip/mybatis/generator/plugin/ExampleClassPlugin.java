@@ -1,29 +1,17 @@
 package com.stip.mybatis.generator.plugin;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.TextElement;
-import org.mybatis.generator.api.dom.xml.XmlElement;
-import org.mybatis.generator.codegen.XmlConstants;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
-import org.mybatis.generator.exception.ShellException;
-import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
 
 /**
@@ -31,14 +19,11 @@ import org.mybatis.generator.internal.util.StringUtility;
  * 定制部分mybatis的插件，主要实现以下功能
  * <ol>
  * <li>生成Example的文件</li>
- * <li>生成新的sqlmap并覆盖xml文件</li>
- * <li>生成空的sqlmap custom的xml文件，不覆盖原来的，如果没有则创建空的</li>
  * </ol>
  * <p>
  * 使用方法配置与在generatorConfig.xml中其中
  * baseModelNamePrefix 为新生成的类文件的前置关键字
  * baseModelPackage 为生成新的类文件的包名
- * extXmlPackage 包名
  * 
  * @author cja
  *
@@ -47,10 +32,6 @@ public class ExampleClassPlugin extends PluginAdapter {
 
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
-
-    private final static String DEFAULT_EXT_XML_PACKAGE = "ext";
-
-    private ShellCallback shellCallback = null;
 
     /**
      * Example的基类
@@ -74,24 +55,9 @@ public class ExampleClassPlugin extends PluginAdapter {
     private String exampleTargetPackage;
     
     /**
-     * Model类的前缀名称
-     */
-    private String modelTargetPackage;
-
-    /**
      * Model类文件包名
      */
     private String fullModelPackage;
-
-    /**
-     * 类的主键字段名, 默认为sid
-     */
-    private String modelPKColumnName = "sid";
-
-    /**
-     * 扩展xml文件包名
-     */
-    private String fullExtXmlPackage;
 
     /**
      * 利用java反射获取isMergeable参数，并修改
@@ -105,8 +71,6 @@ public class ExampleClassPlugin extends PluginAdapter {
     private String exampleClassName;
 
     public ExampleClassPlugin() {
-        shellCallback = new DefaultShellCallback(false);
-
         try {
             if (isMergeableFid == null) {
                 isMergeableFid = GeneratedXmlFile.class.getDeclaredField("isMergeable");
@@ -164,18 +128,6 @@ public class ExampleClassPlugin extends PluginAdapter {
             return false;
         }
 
-        String extXmlPackage = properties.getProperty("extXmlPackage");
-        if (StringUtility.stringHasValue(extXmlPackage)) {
-            fullExtXmlPackage = xmlTargetPackage + "." + extXmlPackage;
-        } else {
-            fullExtXmlPackage = xmlTargetPackage + "." + DEFAULT_EXT_XML_PACKAGE;
-        }
-
-        String pkColumnName = properties.getProperty("pkColumnName");
-        if (StringUtility.stringHasValue(pkColumnName)) {
-            modelPKColumnName = pkColumnName;
-        }
-
         String baseExampleSuperClazz = properties.getProperty("baseExampleSuperClass");
         if (StringUtility.stringHasValue(baseExampleSuperClazz)) {
             baseExampleSuperClass = baseExampleSuperClazz;
@@ -187,79 +139,6 @@ public class ExampleClassPlugin extends PluginAdapter {
         }
 
         return true;
-    }
-
-    /*
-     * 生成新的xml文件 ,覆盖原来存在文件
-     * 
-     * @see
-     * org.mybatis.generator.api.PluginAdapter#contextGenerateAdditionalXmlFiles
-     * (org.mybatis.generator.api.IntrospectedTable)
-     */
-    @Override
-    public List<GeneratedXmlFile> contextGenerateAdditionalXmlFiles(IntrospectedTable introspectedTable) {
-        System.out.println("===============开始：生成Mapper扩展xml文件================");
-
-        if (modelClassName != null) {
-            introspectedTable.setBaseRecordType(modelClassName);
-        }
-
-        if (exampleClassName != null) {
-            introspectedTable.setExampleType(exampleClassName);
-        }
-
-        List<GeneratedXmlFile> extXmlFiles = new ArrayList<GeneratedXmlFile>(1);
-        List<GeneratedXmlFile> xmlFiles = introspectedTable.getGeneratedXmlFiles();
-
-        for (GeneratedXmlFile xmlFile : xmlFiles) {
-            try {
-                // 将xml的isMergeabl改为false
-                isMergeableFid.set(xmlFile, false);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            Document document = new Document(XmlConstants.MYBATIS3_MAPPER_PUBLIC_ID,XmlConstants.MYBATIS3_MAPPER_SYSTEM_ID);
-            XmlElement root = new XmlElement("mapper");
-            document.setRootElement(root);
-
-            // 生成新的空的xml 但是不覆盖
-            root.addAttribute(new Attribute("namespace", introspectedTable.getMyBatis3FallbackSqlMapNamespace()));
-            root.addElement(new TextElement("<!--"));
-            StringBuilder sb = new StringBuilder();
-            sb.append("  文件的生成时间： ");
-            sb.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-            sb.append('.');
-            root.addElement(new TextElement(sb.toString()));
-            root.addElement(new TextElement("  你应该把Mapper类的扩展方法的sql语句放在这个文件里面"));
-
-            root.addElement(new TextElement("-->"));
-            root.addElement(new TextElement(""));// 添加空白行
-
-            String fileName = xmlFile.getFileName();
-            String targetProject = xmlFile.getTargetProject();
-
-            try {
-                File directory = shellCallback.getDirectory(targetProject, fullExtXmlPackage);
-
-                File targetFile = new File(directory, fileName);
-
-                if (!targetFile.exists()) {// 需要判断这个xml文件是否存在，若存在则不生成
-                    GeneratedXmlFile gxf = new GeneratedXmlFile(document, fileName, fullExtXmlPackage, targetProject,true, context.getXmlFormatter());
-                    extXmlFiles.add(gxf);
-                }
-            } catch (ShellException e) {
-                e.printStackTrace();
-            }
-
-            extXmlFiles.add(xmlFile);
-        }
-
-        System.out.println("===============完成：生成Mapper扩展xml文件================");
-
-        return extXmlFiles;
     }
 
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
