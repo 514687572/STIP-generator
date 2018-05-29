@@ -1,5 +1,5 @@
 ## STIP-generator
-主要针对于Mysql批量删除、分页和多模块生成进行优化。
+主要针对于Mysql批量删除、分页、批量插入和多模块生成进行优化。
 
 #1、java mybatais mapper、model和example生成工具包适用于单体架构、微服务和分布式
 
@@ -8,7 +8,7 @@
 <dependency>
   <groupId>com.github.514687572</groupId>
   <artifactId>STIP-generator</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ generatorConfig.xml插件类配置
 		<dependency>
 			<groupId>com.github.514687572</groupId>
 			<artifactId>STIP-generator</artifactId>
-			<version>1.0.4</version>
+			<version>1.0.5</version>
 		</dependency>
 	</dependencies>
 	<configuration>
