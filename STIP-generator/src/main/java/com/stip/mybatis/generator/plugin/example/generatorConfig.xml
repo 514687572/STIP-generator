@@ -19,6 +19,12 @@
            <property name="exampleTargetProject" value="${exampleTargetDir}"/>
   		</plugin>
   		
+		<plugin type="com.stip.mybatis.generator.plugin.ExtendXmlMapperPlugin">
+           <property name="exampleTargetPackage" value="${exampleTargetPackage}"/>
+           <property name="xmlTargetPackage" value="${xmlTargetPackage}"/>
+           <property name="modelTargetPackage" value="${modelTargetPackage}"/>
+  		</plugin>
+  		
 		<plugin type="com.stip.mybatis.generator.plugin.ModelClassPlugin">
            <property name="modelTargetPackage" value="${modelTargetPackage}"/>
            <property name="modelTargetProject" value="${modelTargetDir}"/>
