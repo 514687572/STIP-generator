@@ -44,7 +44,9 @@ public class DeleteByExampleElementGenerator extends
         context.getCommentGenerator().addComment(answer);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("delete "+introspectedTable.getTableConfiguration().getAlias()+" from "); //$NON-NLS-1$
+        sb.append("delete ");
+        sb.append(introspectedTable.getTableConfiguration().getAlias());
+        sb.append(" from "); //$NON-NLS-1$
         sb.append(introspectedTable
                 .getAliasedFullyQualifiedTableNameAtRuntime());
         answer.addElement(new TextElement(sb.toString()));
