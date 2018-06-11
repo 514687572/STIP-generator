@@ -15,7 +15,7 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface GenericMapper<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> {
 	int countByExample(TE example);
-
+	
 	int deleteByExample(TE example);
 
 	int deleteByPrimaryKey(PK id);
