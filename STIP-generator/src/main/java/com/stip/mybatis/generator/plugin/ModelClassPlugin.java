@@ -7,13 +7,11 @@ import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
-import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
 
 /**
@@ -35,10 +33,6 @@ public class ModelClassPlugin extends PluginAdapter {
 
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
-
-    private final static String DEFAULT_EXT_XML_PACKAGE = "ext";
-
-    private ShellCallback shellCallback = null;
 
     /**
      * Model的基类
@@ -62,11 +56,6 @@ public class ModelClassPlugin extends PluginAdapter {
     private String modelPKColumnName = "sid";
 
     /**
-     * 扩展xml文件包名
-     */
-    private String fullExtXmlPackage;
-
-    /**
      * 利用java反射获取isMergeable参数，并修改
      */
     private java.lang.reflect.Field isMergeableFid = null;
@@ -77,8 +66,6 @@ public class ModelClassPlugin extends PluginAdapter {
     private String modelClassName;
 
     public ModelClassPlugin() {
-        shellCallback = new DefaultShellCallback(false);
-
         try {
             if (isMergeableFid == null) {
                 isMergeableFid = GeneratedXmlFile.class.getDeclaredField("isMergeable");

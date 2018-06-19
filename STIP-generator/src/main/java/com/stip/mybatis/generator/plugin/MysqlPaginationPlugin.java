@@ -16,16 +16,13 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 public class MysqlPaginationPlugin extends PluginAdapter {
 
 	@Override
-	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(
-	        XmlElement element, IntrospectedTable introspectedTable) {
-
+	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
 		XmlElement pageElement = new XmlElement("if");
 		pageElement.addAttribute(new Attribute("test","fromRowNum != null and toRowNum >= 0"));
 		pageElement.addElement(new TextElement("limit #{fromRowNum}, #{toRowNum}"));
 		element.getElements().add(pageElement);
 
-		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element,
-		        introspectedTable);
+		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element,introspectedTable);
 	}
 
 	/*

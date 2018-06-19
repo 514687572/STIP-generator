@@ -33,8 +33,7 @@ public class EqualsHashCodePlugin extends PluginAdapter {
     }
 
     @Override
-    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable) {
+    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass,IntrospectedTable introspectedTable) {
         List<IntrospectedColumn> columns;
         if (introspectedTable.getRules().generateRecordWithBLOBsClass()) {
             columns = introspectedTable.getNonBLOBColumns();
@@ -65,22 +64,17 @@ public class EqualsHashCodePlugin extends PluginAdapter {
      * @param introspectedTable
      *            the table corresponding to this class
      */
-    protected void generateEquals(TopLevelClass topLevelClass,
-            List<IntrospectedColumn> introspectedColumns,
-            IntrospectedTable introspectedTable) {
+    protected void generateEquals(TopLevelClass topLevelClass,List<IntrospectedColumn> introspectedColumns,IntrospectedTable introspectedTable) {
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
-        method.setReturnType(FullyQualifiedJavaType
-                .getBooleanPrimitiveInstance());
+        method.setReturnType(FullyQualifiedJavaType.getBooleanPrimitiveInstance());
         method.setName("equals"); //$NON-NLS-1$
-        method.addParameter(new Parameter(FullyQualifiedJavaType
-                .getObjectInstance(), "that")); //$NON-NLS-1$
+        method.addParameter(new Parameter(FullyQualifiedJavaType.getObjectInstance(), "that")); //$NON-NLS-1$
         if (introspectedTable.isJava5Targeted()) {
             method.addAnnotation("@Override"); //$NON-NLS-1$
         }
 
-        context.getCommentGenerator().addGeneralMethodComment(method,
-                introspectedTable);
+        context.getCommentGenerator().addGeneralMethodComment(method,introspectedTable);
 
         method.addBodyLine("if (this == that) {"); //$NON-NLS-1$
         method.addBodyLine("return true;"); //$NON-NLS-1$
@@ -116,9 +110,7 @@ public class EqualsHashCodePlugin extends PluginAdapter {
                 sb.append("&& ("); //$NON-NLS-1$
             }
 
-            String getterMethod = JavaBeansUtil.getGetterMethodName(
-                    introspectedColumn.getJavaProperty(), introspectedColumn
-                            .getFullyQualifiedJavaType());
+            String getterMethod = JavaBeansUtil.getGetterMethodName(introspectedColumn.getJavaProperty(), introspectedColumn.getFullyQualifiedJavaType());
 
             if (introspectedColumn.getFullyQualifiedJavaType().isPrimitive()) {
                 sb.append("this."); //$NON-NLS-1$
@@ -163,9 +155,7 @@ public class EqualsHashCodePlugin extends PluginAdapter {
      * @param introspectedTable
      *            the table corresponding to this class
      */
-    protected void generateHashCode(TopLevelClass topLevelClass,
-            List<IntrospectedColumn> introspectedColumns,
-            IntrospectedTable introspectedTable) {
+    protected void generateHashCode(TopLevelClass topLevelClass,List<IntrospectedColumn> introspectedColumns,IntrospectedTable introspectedTable) {
         Method method = new Method();
         method.setVisibility(JavaVisibility.PUBLIC);
         method.setReturnType(FullyQualifiedJavaType.getIntInstance());
@@ -174,8 +164,7 @@ public class EqualsHashCodePlugin extends PluginAdapter {
             method.addAnnotation("@Override"); //$NON-NLS-1$
         }
 
-        context.getCommentGenerator().addGeneralMethodComment(method,
-                introspectedTable);
+        context.getCommentGenerator().addGeneralMethodComment(method,introspectedTable);
 
         method.addBodyLine("final int prime = 31;"); //$NON-NLS-1$
         method.addBodyLine("int result = 1;"); //$NON-NLS-1$
@@ -186,11 +175,9 @@ public class EqualsHashCodePlugin extends PluginAdapter {
         while (iter.hasNext()) {
             IntrospectedColumn introspectedColumn = iter.next();
 
-            FullyQualifiedJavaType fqjt = introspectedColumn
-                    .getFullyQualifiedJavaType();
+            FullyQualifiedJavaType fqjt = introspectedColumn.getFullyQualifiedJavaType();
 
-            String getterMethod = JavaBeansUtil.getGetterMethodName(
-                    introspectedColumn.getJavaProperty(), fqjt);
+            String getterMethod = JavaBeansUtil.getGetterMethodName(introspectedColumn.getJavaProperty(), fqjt);
 
             sb.setLength(0);
             if (fqjt.isPrimitive()) {
@@ -218,11 +205,9 @@ public class EqualsHashCodePlugin extends PluginAdapter {
                     sb.append(getterMethod);
                     sb.append("());"); //$NON-NLS-1$
                     method.addBodyLine(sb.toString());
-                    method
-                            .addBodyLine("result = prime * result + (int) (temp ^ (temp >>> 32));"); //$NON-NLS-1$
+                    method.addBodyLine("result = prime * result + (int) (temp ^ (temp >>> 32));"); //$NON-NLS-1$
                 } else if ("float".equals(fqjt.getFullyQualifiedName())) { //$NON-NLS-1$
-                    sb
-                            .append("result = prime * result + Float.floatToIntBits("); //$NON-NLS-1$
+                    sb.append("result = prime * result + Float.floatToIntBits("); //$NON-NLS-1$
                     sb.append(getterMethod);
                     sb.append("());"); //$NON-NLS-1$
                     method.addBodyLine(sb.toString());
