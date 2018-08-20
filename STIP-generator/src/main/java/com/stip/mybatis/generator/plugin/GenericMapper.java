@@ -9,8 +9,8 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @author cja
  *
- * @param <T> 基础实体类
- * @param <TE> 基础条件组装器
+ * @param <T> Model class
+ * @param <TE> base example class
  * @param <PK> ID
  */
 public interface GenericMapper<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> {

@@ -3,12 +3,12 @@ package com.stip.mybatis.generator.plugin;
 import java.io.Serializable;
 
 /**
- * 所有Example的基类，包括分页属性
+ * all Model's base calss
  * 
  * @author cja
  *
  */
-public class BaseModel<PK extends Serializable> implements Serializable {
+public abstract class BaseModel<PK extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = -6590882888801386323L;
 

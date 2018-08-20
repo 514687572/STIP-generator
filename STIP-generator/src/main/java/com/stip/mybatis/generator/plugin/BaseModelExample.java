@@ -1,7 +1,7 @@
 package com.stip.mybatis.generator.plugin;
 
 /**
- * 所有Example的基类，包括分页属性
+ * all Example's base class and pager methord impl
  * 
  * @author cja
  * 
@@ -17,24 +17,24 @@ public class BaseModelExample {
 	
 	/**
 	 * 
-	 * @param pageNum 第几页
-	 * @param records 每页显示行数
+	 * @param pageNum 
+	 * @param records one of zhe page records
 	 */
 	public void setPager(int pageNum,int records){
 		if(pageNum<=0||records<0){
-			throw new IllegalStateException("页数需要大于0或记录数不能为负数");
+			throw new IllegalStateException("pageNum must>0 or records must >0");
 		}
 		this.setFromRowNum(records * (pageNum - 1));
 		this.setToRowNum(records);
 	}
 	
 	/**
-	 * 默认每页显示10条记录
-	 * @param pageNum 页码
+	 * default 10 records of one page
+	 * @param pageNum 
 	 */
 	public void setPager(int pageNum){
 		if(pageNum<=0){
-			throw new IllegalStateException("页数需要大于0");
+			throw new IllegalStateException("pageNum must>0");
 		}
 		this.setFromRowNum(defaultRecords * (pageNum - 1));
 		this.setToRowNum(defaultRecords);

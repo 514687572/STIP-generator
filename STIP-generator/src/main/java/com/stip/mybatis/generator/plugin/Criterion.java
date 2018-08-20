@@ -3,7 +3,7 @@ package com.stip.mybatis.generator.plugin;
 import java.util.List;
 
 /**
- * 
+ * select condition base class
  * @author cja
  *
  */
