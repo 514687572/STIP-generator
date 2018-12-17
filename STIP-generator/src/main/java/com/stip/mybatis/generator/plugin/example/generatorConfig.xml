@@ -33,6 +33,13 @@
 		<plugin type="com.stip.mybatis.generator.plugin.MapperPlugin">
 			<property name="daoTargetDir" value="${daoTargetDir}" />
 			<property name="daoTargetPackage" value="${daoTargetPackage}" />
+			<property name="modelTargetPackage" value="${modelTargetPackage}" />
+		</plugin>
+		
+		<plugin type="com.stip.mybatis.generator.plugin.ServicePlugin">
+			<property name="serviceTargetDir" value="${serviceTargetDir}" />
+			<property name="serviceTargetPackage" value="${serviceTargetPackage}" />
+			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
 
 		<plugin type="com.stip.mybatis.generator.plugin.MysqlPaginationPlugin">
@@ -61,6 +68,6 @@
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 
-		<table tableName="Users" alias="users" mapperName="UsersDao" domainObjectName="Users"></table>
+		<table tableName="sys_user_role" alias="sysUserRole" mapperName="SysUserRoleDao" domainObjectName="SysUserRole"></table>
 	</context>
 </generatorConfiguration>
