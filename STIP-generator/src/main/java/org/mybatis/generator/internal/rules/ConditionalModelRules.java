@@ -61,6 +61,11 @@ public class ConditionalModelRules extends BaseRules {
                 || introspectedTable.getPrimaryKeyColumns().size() == 1
                 || blobsAreInBaseRecord();
     }
+    
+    @Override
+    public boolean generateServiceClass() {
+    	return true;
+    }
 
     /**
      * Blobs will be in the base record class if there is only one blob column

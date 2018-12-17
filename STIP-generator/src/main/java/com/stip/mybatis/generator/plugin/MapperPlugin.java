@@ -49,6 +49,8 @@ public class MapperPlugin extends PluginAdapter {
     private String baseModelNamePrefix;
 
     private String daoSuperClass;
+    
+    private String mapperClassName;
 
     public MapperPlugin() {
         shellCallback = new DefaultShellCallback(false);
@@ -78,10 +80,22 @@ public class MapperPlugin extends PluginAdapter {
 
         return valid && valid2;
     }
+    
+    @Override
+    public void initialized(IntrospectedTable introspectedTable) {
+        // 初始化两参数为空
+        mapperClassName = null;
+
+        mapperClassName = introspectedTable.getBaseRecordType();
+        String modelTargetPackage = properties.getProperty("modelTargetPackage");
+        mapperClassName=introspectedTable.getBaseRecordType().replaceAll(modelTargetPackage, "");
+        mapperClassName=daoTargetPackage+mapperClassName+"Dao";
+        introspectedTable.setMyBatis3JavaMapperType(mapperClassName);
+    }
 
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
-		System.out.println("===============开始：生成Mapper文件================");
+		System.out.println("===============开始：生成java dao文件================");
 
 		JavaFormatter javaFormatter = context.getJavaFormatter();
 
@@ -108,7 +122,7 @@ public class MapperPlugin extends PluginAdapter {
 			if (shortName.endsWith("Example")) {// 针对Example类不要生成Mapper
 				String subExampleType = getSubModelType(baseModelJavaType);
 				subModelExampleType = subExampleType;
-			} else {
+			} else if (!shortName.endsWith("Service")){
 				subModelType = getSubModelType(baseModelJavaType);
 				System.out.println("shortName:" + shortName);
 				subModelName = shortName.replace(baseModelNamePrefix, "");

@@ -161,6 +161,20 @@ public final class PluginAggregator implements Plugin {
 
         return rc;
     }
+    
+	@Override
+	public boolean serviceClassGenerated(TopLevelClass tlc, IntrospectedTable introspectedTable) {
+		boolean rc = true;
+
+        for (Plugin plugin : plugins) {
+            if (!plugin.serviceClassGenerated(tlc, introspectedTable)) {
+                rc = false;
+                break;
+            }
+        }
+
+        return rc;
+	}
 
     @Override
     public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(
@@ -1361,4 +1375,5 @@ public final class PluginAggregator implements Plugin {
 
         return rc;
     }
+
 }

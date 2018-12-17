@@ -226,6 +226,8 @@ public interface Rules {
      * @return true if the class should be generated
      */
     boolean generateBaseRecordClass();
+    
+    boolean generateServiceClass();
 
     /**
      * Implements the rule for generating a record with BLOBs. If you return

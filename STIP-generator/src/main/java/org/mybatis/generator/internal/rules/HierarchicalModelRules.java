@@ -59,6 +59,11 @@ public class HierarchicalModelRules extends BaseRules {
     public boolean generateBaseRecordClass() {
         return introspectedTable.hasBaseColumns();
     }
+    
+    @Override
+    public boolean generateServiceClass() {
+    	return true;
+    }
 
     /**
      * Implements the rule for generating a record with BLOBs. A record with

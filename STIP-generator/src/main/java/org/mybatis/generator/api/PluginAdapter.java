@@ -291,6 +291,12 @@ public abstract class PluginAdapter implements Plugin {
             IntrospectedTable introspectedTable) {
         return true;
     }
+    
+    @Override
+    public boolean serviceClassGenerated(TopLevelClass topLevelClass,
+    		IntrospectedTable introspectedTable) {
+    	return true;
+    }
 
     @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
