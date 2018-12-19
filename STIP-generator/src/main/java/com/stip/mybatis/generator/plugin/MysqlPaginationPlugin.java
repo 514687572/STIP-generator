@@ -25,11 +25,6 @@ public class MysqlPaginationPlugin extends PluginAdapter {
 		return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element,introspectedTable);
 	}
 
-	/*
-	 * 检查xml参数是否正确
-	 * 
-	 * @see org.mybatis.generator.api.Plugin#validate(java.util.List)
-	 */
 	public boolean validate(List<String> warnings) {
 
 		return true;

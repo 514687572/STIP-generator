@@ -17,6 +17,8 @@ import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
+import org.mybatis.generator.logging.Log;
+import org.mybatis.generator.logging.LogFactory;
 
 /**
  * Mapper生成插件类
@@ -25,6 +27,7 @@ import org.mybatis.generator.internal.util.StringUtility;
  *
  */
 public class MapperPlugin extends PluginAdapter {
+	public static Log logger = LogFactory.getLog(MapperPlugin.class);
     private static final String DEFAULT_DAO_SUPER_CLASS = "GenericMapper";
     private static final String DEFAULT_DAO_SUPER_CLASS_NAME = "com.stip.mybatis.generator.plugin.GenericMapper";
     
@@ -95,6 +98,7 @@ public class MapperPlugin extends PluginAdapter {
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
 		System.out.println("===============开始：生成java dao文件================");
+		logger.debug("开始：生成java dao文件");
 
 		JavaFormatter javaFormatter = context.getJavaFormatter();
 
@@ -164,7 +168,7 @@ public class MapperPlugin extends PluginAdapter {
 			e.printStackTrace();
 		}
 
-		System.out.println("===============结束：生成Mapper文件================");
+		logger.debug("结束：生成Mapper文件");
 
 		return mapperJavaFiles;
 	}

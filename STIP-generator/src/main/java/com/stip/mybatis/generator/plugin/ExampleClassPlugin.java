@@ -13,6 +13,8 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.internal.util.StringUtility;
+import org.mybatis.generator.logging.Log;
+import org.mybatis.generator.logging.LogFactory;
 
 /**
  * 
@@ -29,6 +31,7 @@ import org.mybatis.generator.internal.util.StringUtility;
  *
  **/
 public class ExampleClassPlugin extends PluginAdapter {
+	public static Log logger = LogFactory.getLog(ExampleClassPlugin.class);
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
@@ -103,7 +106,7 @@ public class ExampleClassPlugin extends PluginAdapter {
      * @see org.mybatis.generator.api.Plugin#validate(java.util.List)
      */
     public boolean validate(List<String> warnings) {
-        System.out.println("开始：validate");
+        logger.debug("开始：validate");
 
         baseModelNamePrefix = properties.getProperty("baseModelNamePrefix");
         if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
@@ -141,7 +144,7 @@ public class ExampleClassPlugin extends PluginAdapter {
     }
 
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        System.out.println("===============开始：修改Example文件================");
+        logger.debug("开始：修改Example文件");
         
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
         String exampleTargetProject = properties.getProperty("exampleTargetProject");
@@ -190,7 +193,7 @@ public class ExampleClassPlugin extends PluginAdapter {
 
         innerClasses.removeAll(removingInnerClasses);
 
-        System.out.println("===============完成：修改Example文件================");
+        logger.debug("完成：修改Example文件");
 
         return super.modelExampleClassGenerated(topLevelClass, introspectedTable);
     }
@@ -201,7 +204,7 @@ public class ExampleClassPlugin extends PluginAdapter {
      * @param topLevelClass
      */
     private static void clearExampleCLass(TopLevelClass topLevelClass) {
-        System.out.println("开始清理Example的TopLevelCLass多余属性");
+        logger.debug("开始清理Example的TopLevelCLass多余属性");
 
         HashSet<Field> removingFields = new HashSet<Field>();
 
@@ -242,7 +245,7 @@ public class ExampleClassPlugin extends PluginAdapter {
      * @param innerClass
      */
     private static void clearGeneratedCriteriaClass(InnerClass innerClass) {
-        System.out.println("开始清理GeneratedCriteriaClass的多余属性");
+        logger.debug("开始清理GeneratedCriteriaClass的多余属性");
 
         HashSet<Field> removingFields = new HashSet<Field>();
 

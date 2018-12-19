@@ -13,6 +13,8 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.internal.util.StringUtility;
+import org.mybatis.generator.logging.Log;
+import org.mybatis.generator.logging.LogFactory;
 
 /**
  * 
@@ -30,6 +32,7 @@ import org.mybatis.generator.internal.util.StringUtility;
  *
  **/
 public class ModelClassPlugin extends PluginAdapter {
+	public static Log logger = LogFactory.getLog(ModelClassPlugin.class);
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
@@ -90,7 +93,7 @@ public class ModelClassPlugin extends PluginAdapter {
      * 验证参数正确性
      */
     public boolean validate(List<String> warnings) {
-        System.out.println("开始：validate");
+        logger.debug("开始：validate");
 
         baseModelNamePrefix = properties.getProperty("baseModelNamePrefix");
         if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
@@ -126,7 +129,7 @@ public class ModelClassPlugin extends PluginAdapter {
      * model类生成方法
      */
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        System.out.println("===============开始：修改Model文件================");
+        logger.debug("开始：修改Model文件");
         
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
 
@@ -160,7 +163,7 @@ public class ModelClassPlugin extends PluginAdapter {
 
         clearModelCLass(topLevelClass);
 
-        System.out.println("===============完成：修改Model文件================");
+        logger.debug("完成：修改Model文件");
 
         return super.modelBaseRecordClassGenerated(topLevelClass, introspectedTable);
     }
@@ -171,8 +174,7 @@ public class ModelClassPlugin extends PluginAdapter {
      * @param topLevelClass
      */
     private void clearModelCLass(TopLevelClass topLevelClass) {
-
-        System.out.println("开始清理Model的TopLevelCLass多余属性");
+    	logger.debug("开始清理Model的TopLevelCLass多余属性");
 
         HashSet<Field> removingFields = new HashSet<Field>();
 

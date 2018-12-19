@@ -10,6 +10,8 @@ import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
+import org.mybatis.generator.logging.Log;
+import org.mybatis.generator.logging.LogFactory;
 
 /**
  * 生成 service 插件类
@@ -18,9 +20,7 @@ import org.mybatis.generator.internal.util.StringUtility;
  *
  */
 public class ServicePlugin extends PluginAdapter {
-    /**
-     * Example的基类
-     */
+	public static Log logger = LogFactory.getLog(ServicePlugin.class);
     private String baseServiceSuperClass = "BaseService";
     private String baseServiceSuperClassName = "com.stip.mybatis.generator.plugin.BaseService";
 
@@ -63,7 +63,7 @@ public class ServicePlugin extends PluginAdapter {
     
     public boolean serviceClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         System.out.println("===============开始：修改service文件================");
-        
+        logger.debug("开始：修改service文件");
         FullyQualifiedJavaType pkType = null;
 		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 		
@@ -92,7 +92,7 @@ public class ServicePlugin extends PluginAdapter {
         topLevelClass.addImportedType("org.springframework.stereotype.Service");
         topLevelClass.addAnnotation("@Service");
 
-        System.out.println("===============完成：修改service文件================");
+        logger.debug("完成：修改service文件");
 
         return super.serviceClassGenerated(topLevelClass, introspectedTable);
     }
