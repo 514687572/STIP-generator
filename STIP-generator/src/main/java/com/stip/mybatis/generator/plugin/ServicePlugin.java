@@ -12,7 +12,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
 
 /**
- * 生成 service 类
+ * 生成 service 插件类
  * 
  * @author cja
  *
@@ -36,6 +36,9 @@ public class ServicePlugin extends PluginAdapter {
         shellCallback = new DefaultShellCallback(false);
     }
 
+    /**
+     * 验证传入的service包是否合法
+     */
     public boolean validate(List<String> warnings) {
     	serviceTargetDir = properties.getProperty("serviceTargetDir");
         boolean valid = StringUtility.stringHasValue(serviceTargetDir);
@@ -63,11 +66,11 @@ public class ServicePlugin extends PluginAdapter {
         
         FullyQualifiedJavaType pkType = null;
 		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+		
 		if (primaryKeyColumns.isEmpty()) {
 			pkType = new FullyQualifiedJavaType("java.lang.String");
 		} else {
 			pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();// TODO:默认不考虑联合主键的情况
-			System.out.println("primaryKey Type:" + pkType);
 		}
         
         // 添加基类
@@ -92,30 +95,6 @@ public class ServicePlugin extends PluginAdapter {
         System.out.println("===============完成：修改service文件================");
 
         return super.serviceClassGenerated(topLevelClass, introspectedTable);
-    }
-    
-    private String getSubModelType(FullyQualifiedJavaType fullyQualifiedJavaType) {
-        String type = fullyQualifiedJavaType.getFullyQualifiedName();
-        String newType = type.replace("..", ".");
-        
-        return newType;
-    }
-
-    public static String capitalize(final String str) {
-        int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
-            return str;
-        }
-
-        char firstChar = str.charAt(0);
-        if (Character.isTitleCase(firstChar)) {
-            return str;
-        }
-
-        return new StringBuilder(strLen)
-            .append(Character.toTitleCase(firstChar))
-            .append(str.substring(1))
-            .toString();
     }
 
 }

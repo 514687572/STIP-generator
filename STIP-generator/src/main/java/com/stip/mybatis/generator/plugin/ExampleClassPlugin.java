@@ -29,7 +29,6 @@ import org.mybatis.generator.internal.util.StringUtility;
  *
  **/
 public class ExampleClassPlugin extends PluginAdapter {
-
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
@@ -202,7 +201,6 @@ public class ExampleClassPlugin extends PluginAdapter {
      * @param topLevelClass
      */
     private static void clearExampleCLass(TopLevelClass topLevelClass) {
-
         System.out.println("开始清理Example的TopLevelCLass多余属性");
 
         HashSet<Field> removingFields = new HashSet<Field>();
@@ -244,7 +242,6 @@ public class ExampleClassPlugin extends PluginAdapter {
      * @param innerClass
      */
     private static void clearGeneratedCriteriaClass(InnerClass innerClass) {
-
         System.out.println("开始清理GeneratedCriteriaClass的多余属性");
 
         HashSet<Field> removingFields = new HashSet<Field>();
@@ -293,24 +290,6 @@ public class ExampleClassPlugin extends PluginAdapter {
         }
         
         return className;
-    }
-
-    public static String capitalize(final String str) {
-        int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
-            return str;
-        }
-
-        char firstChar = str.charAt(0);
-        if (Character.isTitleCase(firstChar)) {
-            // already capitalized
-            return str;
-        }
-
-        return new StringBuilder(strLen)
-            .append(Character.toTitleCase(firstChar))
-            .append(str.substring(1))
-            .toString();
     }
 
 }

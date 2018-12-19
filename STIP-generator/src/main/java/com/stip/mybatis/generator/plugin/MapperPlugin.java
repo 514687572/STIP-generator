@@ -19,13 +19,12 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
 
 /**
- * 生成 Mapper 类
+ * Mapper生成插件类
  * 
  * @author cja
  *
  */
 public class MapperPlugin extends PluginAdapter {
-
     private static final String DEFAULT_DAO_SUPER_CLASS = "GenericMapper";
     private static final String DEFAULT_DAO_SUPER_CLASS_NAME = "com.stip.mybatis.generator.plugin.GenericMapper";
     

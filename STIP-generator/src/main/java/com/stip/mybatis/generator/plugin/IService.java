@@ -4,7 +4,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-
+/**
+ * 共有service接口
+ * @author cja
+ *
+ * @param <T> 实体对象
+ * @param <TE>对应的example
+ * @param <PK>主键类型
+ */
 public interface IService<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> {
 
 	int countByExample(TE example);

@@ -571,4 +571,22 @@ public abstract class PluginAdapter implements Plugin {
             IntrospectedTable introspectedTable) {
         return true;
     }
+    
+    public static String capitalize(final String str) {
+        int strLen;
+        if (str == null || (strLen = str.length()) == 0) {
+            return str;
+        }
+
+        char firstChar = str.charAt(0);
+        if (Character.isTitleCase(firstChar)) {
+            return str;
+        }
+        
+        StringBuilder result=new StringBuilder(strLen);
+        result.append(Character.toTitleCase(firstChar));
+        result.append(str.substring(1));
+
+        return result.toString();
+    }
 }

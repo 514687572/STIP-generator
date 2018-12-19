@@ -30,7 +30,6 @@ import org.mybatis.generator.internal.util.StringUtility;
  *
  **/
 public class ModelClassPlugin extends PluginAdapter {
-
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
@@ -87,10 +86,8 @@ public class ModelClassPlugin extends PluginAdapter {
         introspectedTable.setBaseRecordType(genBaseClassName(modelClassName));
     }
 
-    /*
-     * 检查xml参数是否正确
-     * 
-     * @see org.mybatis.generator.api.Plugin#validate(java.util.List)
+    /**
+     * 验证参数正确性
      */
     public boolean validate(List<String> warnings) {
         System.out.println("开始：validate");
@@ -125,6 +122,9 @@ public class ModelClassPlugin extends PluginAdapter {
         return true;
     }
 
+    /**
+     * model类生成方法
+     */
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         System.out.println("===============开始：修改Model文件================");
         
@@ -221,24 +221,6 @@ public class ModelClassPlugin extends PluginAdapter {
         }
         
         return className;
-    }
-
-    public static String capitalize(final String str) {
-        int strLen;
-        if (str == null || (strLen = str.length()) == 0) {
-            return str;
-        }
-
-        char firstChar = str.charAt(0);
-        if (Character.isTitleCase(firstChar)) {
-            // already capitalized
-            return str;
-        }
-
-        return new StringBuilder(strLen)
-            .append(Character.toTitleCase(firstChar))
-            .append(str.substring(1))
-            .toString();
     }
 
 }

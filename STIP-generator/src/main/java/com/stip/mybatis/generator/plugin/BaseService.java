@@ -7,7 +7,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+/**
+ * service抽象类
+ * @author cja
+ *
+ * @param <T> 实体类
+ * @param <TE>对应example
+ * @param <PK>主键类型
+ */
 public abstract class BaseService<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> implements IService<T, TE, PK>{
     @Autowired
     protected GenericMapper<T, TE, PK> dao;
