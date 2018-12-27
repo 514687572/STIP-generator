@@ -56,7 +56,7 @@ public abstract class BaseService<T extends BaseModel<PK>, TE extends BaseModelE
 	}
 
 	public int updateByPrimaryKeySelective(T record) {
-		return dao.updateByPrimaryKey(record);
+		return dao.updateByPrimaryKeySelective(record);
 	}
 
 	public int updateByPrimaryKey(T record) {
