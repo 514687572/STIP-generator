@@ -8,7 +8,7 @@
 <dependency>
   <groupId>com.github.514687572</groupId>
   <artifactId>STIP-generator</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ generatorConfig.xml插件类配置
 		<dependency>
 			<groupId>com.github.514687572</groupId>
 			<artifactId>STIP-generator</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
 		</dependency>
 	</dependencies>
 	<configuration>
