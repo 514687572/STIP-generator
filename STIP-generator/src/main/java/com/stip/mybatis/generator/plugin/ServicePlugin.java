@@ -98,7 +98,7 @@ public class ServicePlugin extends PluginAdapter {
 
         topLevelClass.setSuperClass(superClazzType);
         
-        FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType(modelClassName+"Service");
+        FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType((modelClassName+"Service").replace(".", ""));
         topLevelClass.addSuperInterface(superInterface);
         topLevelClass.addImportedType(superServiceUrl);
         

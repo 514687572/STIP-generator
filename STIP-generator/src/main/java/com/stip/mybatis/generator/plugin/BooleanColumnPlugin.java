@@ -90,9 +90,13 @@ public class BooleanColumnPlugin extends PluginAdapter {
                 introspectedColumn.setFullyQualifiedJavaType(new FullyQualifiedJavaType(JAVA_TTYPE_BOOLEAN));
             }
             
-            if(KeyWords.valueOf("Key"+introspectedColumn.getJavaProperty())!=null) {
-            	introspectedColumn.setJavaProperty(toLowerCaseFirstOne(introspectedColumn.getJavaProperty()+"ext"));
-            }
+            try {
+				if(KeyWords.valueOf("Key"+introspectedColumn.getJavaProperty())!=null) {
+					introspectedColumn.setJavaProperty(toLowerCaseFirstOne(introspectedColumn.getJavaProperty()+"ext"));
+				}
+			} catch (Exception e) {
+				
+			}
             
         }
     }

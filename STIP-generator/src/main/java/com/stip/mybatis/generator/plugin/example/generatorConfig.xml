@@ -36,18 +36,19 @@
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
 		
-		<plugin type="com.stip.mybatis.generator.plugin.ServicePlugin">
-			<property name="serviceTargetDir" value="${serviceTargetDir}" />
-			<property name="serviceTargetPackage" value="${serviceTargetPackage}" />
-			<property name="modelTargetPackage" value="${modelTargetPackage}" />
-		</plugin>
-		
 		<plugin type="com.stip.mybatis.generator.plugin.ServiceInterfacePlugin">
 			<property name="serviceTargetDir" value="${serviceTargetDir}" />
 			<property name="serviceInterfaceTargetPackage" value="${serviceInterfaceTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
-
+		
+		<plugin type="com.stip.mybatis.generator.plugin.ServicePlugin">
+			<property name="serviceTargetDir" value="${serviceTargetDir}" />
+			<property name="serviceTargetPackage" value="${serviceTargetPackage}" />
+			<property name="modelTargetPackage" value="${modelTargetPackage}" />
+			<property name="serviceInterfaceTargetPackage" value="${serviceInterfaceTargetPackage}" />
+		</plugin>
+		
 		<plugin type="com.stip.mybatis.generator.plugin.MysqlPaginationPlugin">
 		</plugin>
 
