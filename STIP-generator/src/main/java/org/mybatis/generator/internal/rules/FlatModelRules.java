@@ -60,6 +60,11 @@ public class FlatModelRules extends BaseRules {
     public boolean generateServiceClass() {
     	return true;
     }
+    
+    @Override
+    public boolean generateServiceInterfaceClass() {
+    	return true;
+    }
 
     /**
      * We never generate a record with BLOBs class in the flat model.

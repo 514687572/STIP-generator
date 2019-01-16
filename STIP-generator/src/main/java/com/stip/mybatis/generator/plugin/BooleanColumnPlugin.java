@@ -21,6 +21,56 @@ public class BooleanColumnPlugin extends PluginAdapter {
     private static final String PREFIX_STRING_IS = "is";
 
     private static final String JAVA_TTYPE_BOOLEAN = "Boolean";
+    
+	enum KeyWords {
+		Keyabstract("abstract"), 
+		Keyassert("assert"), 
+		Keycontinue("continue"), 
+		Keydefault("default"),
+		Keydouble("double"), 
+		Keyelse("else"), 
+		Keyenum("enum"), 
+		Keyextends("extends"), 
+		Keyfinal("final"),
+		Keyfinally("finally"), 
+		Keyfloat("float"), 
+		Keyfor("for"), 
+		Keygoto("goto"), 
+		Keyif("if"),
+		Keyimplements("implements"), 
+		Keyimport("import"), 
+		Keyinstanceof("instanceof"), 
+		Keyint("int"),
+		Keyinterface("interface"), 
+		Keylong("long"), 
+		Keynative("native"), 
+		Keynew("new"), 
+		Keypackage("package"),
+		Keyprivate("private"), 
+		Keyprotected("protected"), 
+		Keypublic("public"), 
+		Keyreturn("return"), 
+		Keyshort("short"),
+		Keystatic("static"), 
+		Keystrictfp("strictfp"), 
+		Keysuper("super"), 
+		Keyswitch("switch"),
+		Keysynchronized("synchronized"), 
+		Keythis("this"), 
+		Keythrow("throw"), 
+		Keythrows("throws"),
+		Keytransient("transient"), 
+		Keytry("try"), 
+		Keyvoid("void"), 
+		Keyvolatile("volatile"), 
+		Keywhile("while");
+
+		private String keyType;
+
+		private KeyWords(String keyType) {
+			this.keyType = keyType;
+		}
+	}
 
     public boolean validate(List<String> warnings) {
         return true;
@@ -39,6 +89,11 @@ public class BooleanColumnPlugin extends PluginAdapter {
                 introspectedColumn.setJavaProperty(toLowerCaseFirstOne(propertyName));
                 introspectedColumn.setFullyQualifiedJavaType(new FullyQualifiedJavaType(JAVA_TTYPE_BOOLEAN));
             }
+            
+            if(KeyWords.valueOf("Key"+introspectedColumn.getJavaProperty())!=null) {
+            	introspectedColumn.setJavaProperty(toLowerCaseFirstOne(introspectedColumn.getJavaProperty()+"ext"));
+            }
+            
         }
     }
 

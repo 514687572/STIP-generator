@@ -228,6 +228,7 @@ public interface Rules {
     boolean generateBaseRecordClass();
     
     boolean generateServiceClass();
+    boolean generateServiceInterfaceClass();
 
     /**
      * Implements the rule for generating a record with BLOBs. If you return

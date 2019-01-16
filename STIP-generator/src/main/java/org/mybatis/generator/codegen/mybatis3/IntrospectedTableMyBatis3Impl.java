@@ -36,6 +36,7 @@ import org.mybatis.generator.codegen.mybatis3.model.ExampleGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.PrimaryKeyGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.RecordWithBLOBsGenerator;
 import org.mybatis.generator.codegen.mybatis3.model.ServiceGenerator;
+import org.mybatis.generator.codegen.mybatis3.model.ServiceInterfaceGenerator;
 import org.mybatis.generator.codegen.mybatis3.xmlmapper.XMLMapperGenerator;
 import org.mybatis.generator.config.PropertyRegistry;
 import org.mybatis.generator.internal.ObjectFactory;
@@ -150,6 +151,12 @@ public class IntrospectedTableMyBatis3Impl extends IntrospectedTable {
         
         if (getRules().generateServiceClass()) {
         	AbstractJavaGenerator javaGenerator = new ServiceGenerator();
+        	initializeAbstractGenerator(javaGenerator, warnings,progressCallback);
+        	javaModelGenerators.add(javaGenerator);
+        }
+        
+        if (getRules().generateServiceInterfaceClass()) {
+        	AbstractJavaGenerator javaGenerator = new ServiceInterfaceGenerator();
         	initializeAbstractGenerator(javaGenerator, warnings,progressCallback);
         	javaModelGenerators.add(javaGenerator);
         }

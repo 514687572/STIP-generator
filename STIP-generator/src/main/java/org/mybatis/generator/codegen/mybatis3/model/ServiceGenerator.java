@@ -84,6 +84,7 @@ public class ServiceGenerator extends AbstractJavaGenerator {
         if (context.getPlugins().serviceClassGenerated(topLevelClass,introspectedTable)) {
             answer.add(topLevelClass);
         }
+        
         return answer;
     }
 

@@ -30,7 +30,13 @@ public class ServicePlugin extends PluginAdapter {
 
     private String serviceTargetPackage;
     
+    private String serviceInterFacePackage;
+    
     private String serviceClassName;
+    
+    private String superServiceUrl;
+    
+    private String modelClassName;
     
     public ServicePlugin() {
         shellCallback = new DefaultShellCallback(false);
@@ -45,8 +51,11 @@ public class ServicePlugin extends PluginAdapter {
 
         serviceTargetPackage = properties.getProperty("serviceTargetPackage");
         boolean valid2 = StringUtility.stringHasValue(serviceTargetPackage);
+        
+        serviceInterFacePackage = properties.getProperty("serviceInterfaceTargetPackage");
+        boolean valid3 = StringUtility.stringHasValue(serviceInterFacePackage);
 
-        return valid && valid2;
+        return valid && valid2 && valid3;
     }
 
     @Override
@@ -56,14 +65,14 @@ public class ServicePlugin extends PluginAdapter {
 
         serviceClassName = introspectedTable.getBaseRecordType();
         String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        serviceClassName=introspectedTable.getBaseRecordType().replaceAll(modelTargetPackage, "");
-        serviceClassName=serviceTargetPackage+serviceClassName+"Service";
+        modelClassName=introspectedTable.getBaseRecordType().replaceAll(modelTargetPackage, "");
+        superServiceUrl=serviceInterFacePackage+modelClassName+"Service";
+        serviceClassName=serviceTargetPackage+modelClassName+"ServiceImpl";
         introspectedTable.setBaseServiceType(serviceClassName);
     }
     
     public boolean serviceClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        System.out.println("===============开始：修改service文件================");
-        logger.debug("开始：修改service文件");
+        logger.debug("开始：修改serviceImpl文件");
         FullyQualifiedJavaType pkType = null;
 		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 		
@@ -89,10 +98,14 @@ public class ServicePlugin extends PluginAdapter {
 
         topLevelClass.setSuperClass(superClazzType);
         
+        FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType(modelClassName+"Service");
+        topLevelClass.addSuperInterface(superInterface);
+        topLevelClass.addImportedType(superServiceUrl);
+        
         topLevelClass.addImportedType("org.springframework.stereotype.Service");
         topLevelClass.addAnnotation("@Service");
-
-        logger.debug("完成：修改service文件");
+        
+        logger.debug("完成：修改serviceImpl文件");
 
         return super.serviceClassGenerated(topLevelClass, introspectedTable);
     }

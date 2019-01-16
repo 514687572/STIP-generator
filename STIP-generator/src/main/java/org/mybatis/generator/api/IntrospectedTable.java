@@ -61,6 +61,7 @@ public abstract class IntrospectedTable {
         ATTR_PRIMARY_KEY_TYPE,
         ATTR_BASE_RECORD_TYPE,
         ATTR_BASE_SERVICE_TYPE,
+        ATTR_BASE_INTERFACE_TYPE,
         ATTR_RECORD_WITH_BLOBS_TYPE,
         ATTR_EXAMPLE_TYPE,
         ATTR_IBATIS2_SQL_MAP_PACKAGE,
@@ -364,6 +365,10 @@ public abstract class IntrospectedTable {
     
     public String getBaseServiceType() {
     	return internalAttributes.get(InternalAttribute.ATTR_BASE_SERVICE_TYPE);
+    }
+    
+    public String getBaseInterfaceType() {
+    	return internalAttributes.get(InternalAttribute.ATTR_BASE_INTERFACE_TYPE);
     }
 
     /**
@@ -1075,6 +1080,10 @@ public abstract class IntrospectedTable {
     
     public void setBaseServiceType(String baseServiceType) {
     	internalAttributes.put(InternalAttribute.ATTR_BASE_SERVICE_TYPE,baseServiceType);
+    }
+    
+    public void setBaseInterfaceType(String baseServiceType) {
+    	internalAttributes.put(InternalAttribute.ATTR_BASE_INTERFACE_TYPE,baseServiceType);
     }
 
     public void setRecordWithBLOBsType(String recordWithBLOBsType) {

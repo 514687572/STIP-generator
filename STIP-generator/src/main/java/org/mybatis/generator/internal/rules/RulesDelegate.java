@@ -78,6 +78,11 @@ public class RulesDelegate implements Rules {
     public boolean generateServiceClass() {
     	return rules.generateServiceClass();
     }
+    
+    @Override
+    public boolean generateServiceInterfaceClass() {
+    	return rules.generateServiceInterfaceClass();
+    }
 
     @Override
     public boolean generateBaseResultMap() {

@@ -66,6 +66,11 @@ public class ConditionalModelRules extends BaseRules {
     public boolean generateServiceClass() {
     	return true;
     }
+    
+    @Override
+    public boolean generateServiceInterfaceClass() {
+    	return true;
+    }
 
     /**
      * Blobs will be in the base record class if there is only one blob column

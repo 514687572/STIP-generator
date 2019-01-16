@@ -10,7 +10,6 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.JavaFormatter;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.ShellCallback;
-import org.mybatis.generator.api.dom.java.CompilationUnit;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
@@ -97,7 +96,6 @@ public class MapperPlugin extends PluginAdapter {
 
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
-		System.out.println("===============开始：生成java dao文件================");
 		logger.debug("开始：生成java dao文件");
 
 		JavaFormatter javaFormatter = context.getJavaFormatter();
@@ -112,28 +110,15 @@ public class MapperPlugin extends PluginAdapter {
 		}
 
 		List<GeneratedJavaFile> mapperJavaFiles = new ArrayList<GeneratedJavaFile>();
-		String subModelName = "";
 		String subModelExampleType = "";
 		String subModelType = "";
+		
+		String subExampleType = introspectedTable.getExampleType();
+		subModelExampleType = subExampleType;
+		
+		subModelType = introspectedTable.getBaseRecordType();
 
-		for (GeneratedJavaFile javaFile : introspectedTable.getGeneratedJavaFiles()) {
-			CompilationUnit unit = javaFile.getCompilationUnit();
-			FullyQualifiedJavaType baseModelJavaType = unit.getType();
-
-			String shortName = baseModelJavaType.getShortName();
-
-			if (shortName.endsWith("Example")) {// 针对Example类不要生成Mapper
-				String subExampleType = getSubModelType(baseModelJavaType);
-				subModelExampleType = subExampleType;
-			} else if (!shortName.endsWith("Service")){
-				subModelType = getSubModelType(baseModelJavaType);
-				System.out.println("shortName:" + shortName);
-				subModelName = shortName.replace(baseModelNamePrefix, "");
-			}
-
-		}
-
-		Interface mapperInterface = new Interface(daoTargetPackage + "." + subModelName + "Dao");
+		Interface mapperInterface = new Interface(mapperClassName);
 		mapperInterface.setVisibility(JavaVisibility.PUBLIC);
 		mapperInterface.addJavaDocLine(" /**");
 		mapperInterface.addJavaDocLine(" * 可添加自定义查询语句，方便后续扩展");
@@ -173,10 +158,4 @@ public class MapperPlugin extends PluginAdapter {
 		return mapperJavaFiles;
 	}
 
-    private String getSubModelType(FullyQualifiedJavaType fullyQualifiedJavaType) {
-        String type = fullyQualifiedJavaType.getFullyQualifiedName();
-        String newType = type.replace("..", ".");
-        
-        return newType;
-    }
 }

@@ -64,6 +64,11 @@ public class HierarchicalModelRules extends BaseRules {
     public boolean generateServiceClass() {
     	return true;
     }
+    
+    @Override
+    public boolean generateServiceInterfaceClass() {
+    	return true;
+    }
 
     /**
      * Implements the rule for generating a record with BLOBs. A record with
