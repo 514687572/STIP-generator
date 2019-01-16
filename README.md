@@ -1,14 +1,14 @@
 ﻿## STIP-generator
-主要针对于mybatais Mysql批量删除、分页、批量插入和多模块生成进行优化。
+实现mybatais代码生成插件 Mysql批量删除、分页、批量插入和多模块生成进行优化。
 
-#1、可以直接生成java mybatais mapper、model、example和service类，生成工具包适用于单体架构、微服务和分布式
+#1、可以直接生成java mybatais mapper、model、example、service类和service接口类，生成工具包适用于单体架构、微服务和分布式，并对数据库中java关键字进行处理
 
 #2、在maven中添加依赖
 ```xml
 <dependency>
   <groupId>com.github.514687572</groupId>
   <artifactId>STIP-generator</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ generatorConfig.xml插件类配置
 		<dependency>
 			<groupId>com.github.514687572</groupId>
 			<artifactId>STIP-generator</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.9</version>
 		</dependency>
 	</dependencies>
 	<configuration>
