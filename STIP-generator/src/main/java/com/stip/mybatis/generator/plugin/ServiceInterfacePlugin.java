@@ -78,7 +78,7 @@ public class ServiceInterfacePlugin extends PluginAdapter {
 		if (primaryKeyColumns.isEmpty()) {
 			pkType = new FullyQualifiedJavaType("java.lang.String");
 		} else {
-			pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();// TODO:默认不考虑联合主键的情况
+			pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();
 			System.out.println("primaryKey Type:" + pkType);
 		}
 		

@@ -87,18 +87,18 @@ public class ServicePlugin extends PluginAdapter {
         FullyQualifiedJavaType superClazzTypeName = new FullyQualifiedJavaType(baseServiceSuperClassName);
         topLevelClass.addImportedType(superClazzTypeName);
         
-        FullyQualifiedJavaType subModelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
-        topLevelClass.addImportedType(subModelJavaType);
-		FullyQualifiedJavaType subModelExampleJavaType = new FullyQualifiedJavaType(introspectedTable.getExampleType());
-		topLevelClass.addImportedType(subModelExampleJavaType);
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        topLevelClass.addImportedType(modelJavaType);
+		FullyQualifiedJavaType exampleJavaType = new FullyQualifiedJavaType(introspectedTable.getExampleType());
+		topLevelClass.addImportedType(exampleJavaType);
         
-        superClazzType.addTypeArgument(subModelJavaType);
-        superClazzType.addTypeArgument(subModelExampleJavaType);
+        superClazzType.addTypeArgument(modelJavaType);
+        superClazzType.addTypeArgument(exampleJavaType);
         superClazzType.addTypeArgument(pkType);
 
         topLevelClass.setSuperClass(superClazzType);
         
-        FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType((modelClassName+"Service").replace(".", ""));
+        FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType((modelJavaType.getShortName()+"Service"));
         topLevelClass.addSuperInterface(superInterface);
         topLevelClass.addImportedType(superServiceUrl);
         

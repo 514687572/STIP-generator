@@ -86,7 +86,7 @@ public class ModelClassPlugin extends PluginAdapter {
         modelClassName = null;
 
         modelClassName = introspectedTable.getBaseRecordType();
-        introspectedTable.setBaseRecordType(genBaseClassName(modelClassName));
+        introspectedTable.setBaseRecordType(modelClassName);
     }
 
     /**
@@ -158,7 +158,7 @@ public class ModelClassPlugin extends PluginAdapter {
         }
 
         superClazzType.addTypeArgument(pkType);
-        System.out.println("Model基类：" + superClazzType.toString());
+        logger.debug("Model基类：" + superClazzType.toString());
         topLevelClass.setSuperClass(superClazzType);
 
         clearModelCLass(topLevelClass);
@@ -203,26 +203,6 @@ public class ModelClassPlugin extends PluginAdapter {
             }
         }
         methods.removeAll(removingMethods);
-    }
-
-    /**
-     * 根据Model类的全路径名称，生成Base Model类的全路径名(包括类名)。
-     * 比如根据com.company.model.User，生成com.company.model.base.BaseUser
-     * 
-     * @param oldModelType
-     * @return 新的名称
-     */
-    private String genBaseClassName(String oldModelType) {
-        int indexOfLastDot = oldModelType.lastIndexOf('.');
-        String className="";
-        
-        if("".equals(baseModelNamePrefix)) {
-        	className=fullModelPackage + oldModelType.substring(indexOfLastDot + 1);
-        }else {
-        	className=fullModelPackage + "." + baseModelNamePrefix + oldModelType.substring(indexOfLastDot + 1);
-        }
-        
-        return className;
     }
 
 }
