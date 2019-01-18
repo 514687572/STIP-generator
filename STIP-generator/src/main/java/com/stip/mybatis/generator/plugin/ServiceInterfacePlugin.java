@@ -9,6 +9,7 @@ import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
 import org.mybatis.generator.logging.Log;
@@ -33,6 +34,8 @@ public class ServiceInterfacePlugin extends PluginAdapter {
     
     private String serviceInterfaceName;
     
+    private String baseServiceInterfacePackageName=".service";
+    
     public ServiceInterfacePlugin() {
         shellCallback = new DefaultShellCallback(false);
     }
@@ -42,12 +45,24 @@ public class ServiceInterfacePlugin extends PluginAdapter {
      */
     public boolean validate(List<String> warnings) {
     	serviceTargetDir = properties.getProperty("serviceTargetDir");
-        boolean valid = StringUtility.stringHasValue(serviceTargetDir);
+        if (!StringUtility.stringHasValue(serviceTargetDir)) {
+        	serviceTargetDir = properties.getProperty("targetProject");
+        	if (!StringUtility.stringHasValue(serviceTargetDir)) {
+        		return false;
+        	}
+        }
 
         serviceInterfaceTargetPackage = properties.getProperty("serviceInterfaceTargetPackage");
-        boolean valid2 = StringUtility.stringHasValue(serviceInterfaceTargetPackage);
+        if (!StringUtility.stringHasValue(serviceInterfaceTargetPackage)) {
+        	serviceInterfaceTargetPackage = properties.getProperty("targetPackage");
+        	if (!StringUtility.stringHasValue(serviceInterfaceTargetPackage)) {
+        		return false;
+        	}else {
+        		serviceInterfaceTargetPackage+=baseServiceInterfacePackageName;
+        	}
+        }
 
-        return valid && valid2;
+        return true;
     }
 
     @Override
@@ -55,15 +70,19 @@ public class ServiceInterfacePlugin extends PluginAdapter {
     	// 初始化两参数为空
     	serviceInterfaceName = null;
 
-        serviceInterfaceName = introspectedTable.getBaseRecordType();
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        serviceInterfaceName=introspectedTable.getBaseRecordType().replaceAll(modelTargetPackage, "");
-        serviceInterfaceName=serviceInterfaceTargetPackage+serviceInterfaceName+"Service";
+    	FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        serviceInterfaceName = modelJavaType.getShortName();
+        serviceInterfaceName=serviceInterfaceTargetPackage+"."+serviceInterfaceName+"Service";
         introspectedTable.setBaseInterfaceType(serviceInterfaceName);
     }
     
     public boolean serviceInterfaceGenerated(Interface serviceInterface, IntrospectedTable introspectedTable) {
         logger.debug("开始：修改service文件");
+        
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        javaModelGeneratorConfiguration.setTargetPackage(serviceInterfaceTargetPackage);
+        javaModelGeneratorConfiguration.setTargetProject(serviceTargetDir);
+        introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
         
         FullyQualifiedJavaType superClazzType = new FullyQualifiedJavaType(baseServiceSuperClass);
         FullyQualifiedJavaType superClazzTypeName = new FullyQualifiedJavaType(baseServiceSuperClassName);

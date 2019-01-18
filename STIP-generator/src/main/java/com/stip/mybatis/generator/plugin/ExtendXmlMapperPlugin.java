@@ -62,6 +62,16 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
      */
     private String baseModelNamePrefix;
     
+    private String baseExamplePackageName=".example";
+    
+    private String baseModelPackageName = ".entity";
+    
+    private String extDaoTargetPackage;
+    
+    private String DaoTargetPackageName=".dao";
+    
+    private String extMapperPackageName=".ext";
+    
     /**
 	 * 
 	 */
@@ -85,11 +95,23 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
         // 初始化两参数为空
         modelClassName = null;
         String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
+        
+        if (!StringUtility.stringHasValue(exampleTargetPackage)) {
+        	exampleTargetPackage = properties.getProperty("targetPackage");
+            if (StringUtility.stringHasValue(exampleTargetPackage)) {
+            	exampleTargetPackage+=baseExamplePackageName;
+            }
+        }
+        
         String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        modelClassName = introspectedTable.getBaseRecordType();
-        modelClassName=modelClassName.replaceAll(exampleTargetPackage, "");
-        modelClassName=modelTargetPackage+modelClassName;
-        introspectedTable.setBaseRecordType(modelClassName);
+        
+        if (!StringUtility.stringHasValue(modelTargetPackage)) {
+        	modelTargetPackage = properties.getProperty("basePackage");
+            if (!StringUtility.stringHasValue(modelTargetPackage)) {
+            	modelTargetPackage+=baseModelPackageName;
+            }
+        }
+        
     }
     
     public void addElements(XmlElement parentElement,IntrospectedTable introspectedTable) {
@@ -303,22 +325,17 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
             baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
 
-        String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
-        if (!StringUtility.stringHasValue(exampleTargetPackage)) {
-            return false;
+        extDaoTargetPackage = properties.getProperty("daoTargetPackage");
+        if (!StringUtility.stringHasValue(extDaoTargetPackage)) {
+        	extDaoTargetPackage = properties.getProperty("targetPackage");
+            if (!StringUtility.stringHasValue(extDaoTargetPackage)) {
+                return false;
+            }else {
+            	extDaoTargetPackage=extDaoTargetPackage+DaoTargetPackageName+extMapperPackageName;
+            }
         }
-
-        String xmlTargetPackage = properties.getProperty("xmlTargetPackage");
-        if (!StringUtility.stringHasValue(xmlTargetPackage)) {
-            return false;
-        }
-
-        String extXmlPackage = properties.getProperty("extXmlPackage");
-        if (StringUtility.stringHasValue(extXmlPackage)) {
-            fullExtXmlPackage = xmlTargetPackage + "." + extXmlPackage;
-        } else {
-            fullExtXmlPackage = xmlTargetPackage + "." + DEFAULT_EXT_XML_PACKAGE;
-        }
+        
+        fullExtXmlPackage=extDaoTargetPackage;
 
         return true;
 	}

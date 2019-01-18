@@ -728,6 +728,8 @@ public class MyBatisGeneratorConfigurationParser {
                 String propValue = resolveProperty(propName);
                 if (propValue != null) {
                     newString = prepend + propValue + append;
+                }else {
+                	return " ";
                 }
 
                 start = newString.indexOf(OPEN, end);

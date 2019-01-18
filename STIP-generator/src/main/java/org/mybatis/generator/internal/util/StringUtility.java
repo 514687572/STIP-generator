@@ -31,7 +31,7 @@ public class StringUtility {
     }
 
     public static boolean stringHasValue(String s) {
-        return s != null && s.length() > 0;
+        return s != null && s.trim().length() > 0;
     }
 
     public static String composeFullyQualifiedTableName(String catalog,

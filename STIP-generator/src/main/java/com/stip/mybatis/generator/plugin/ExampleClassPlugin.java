@@ -56,6 +56,10 @@ public class ExampleClassPlugin extends PluginAdapter {
      */
     private String exampleTargetPackage;
     
+    private String exampleTargetProject;
+    
+    private String baseExamplePackageName=".example";
+    
     /**
      * Model类文件包名
      */
@@ -90,13 +94,10 @@ public class ExampleClassPlugin extends PluginAdapter {
         // 初始化两参数为空
         modelClassName = null;
 
-        modelClassName = introspectedTable.getBaseRecordType();
-        introspectedTable.setBaseRecordType(genBaseClassName(modelClassName));
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        modelClassName = modelJavaType.getShortName();
         
-        String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        exampleClassName=introspectedTable.getExampleType().replaceAll(modelTargetPackage, "");
-        exampleClassName=exampleTargetPackage+exampleClassName;
+        exampleClassName=exampleTargetPackage+"."+modelClassName+"Example";
         introspectedTable.setExampleType(exampleClassName);
     }
 
@@ -113,9 +114,22 @@ public class ExampleClassPlugin extends PluginAdapter {
             baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
 
-        String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
+        exampleTargetPackage = properties.getProperty("exampleTargetPackage");
         if (!StringUtility.stringHasValue(exampleTargetPackage)) {
-            return false;
+        	exampleTargetPackage = properties.getProperty("targetPackage");
+            if (!StringUtility.stringHasValue(exampleTargetPackage)) {
+                return false;
+            }else {
+            	exampleTargetPackage+=baseExamplePackageName;
+            }
+        }
+        
+        exampleTargetProject = properties.getProperty("exampleTargetDir");
+        if (!StringUtility.stringHasValue(exampleTargetProject)) {
+        	exampleTargetProject = properties.getProperty("targetProject");
+        	if (!StringUtility.stringHasValue(exampleTargetProject)) {
+        		return false;
+        	}
         }
 
         String baseExamplePackage = properties.getProperty("baseExamplePackage");
@@ -123,11 +137,6 @@ public class ExampleClassPlugin extends PluginAdapter {
             fullModelPackage = exampleTargetPackage + "." + baseExamplePackage;
         } else {
             fullModelPackage = exampleTargetPackage + "." + DEFAULT_BASE_MODEL_PACKAGE;
-        }
-
-        String xmlTargetPackage = properties.getProperty("xmlTargetPackage");
-        if (!StringUtility.stringHasValue(xmlTargetPackage)) {
-            return false;
         }
 
         String baseExampleSuperClazz = properties.getProperty("baseExampleSuperClass");
@@ -143,22 +152,13 @@ public class ExampleClassPlugin extends PluginAdapter {
         return true;
     }
 
+    @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         logger.debug("开始：修改Example文件");
         
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
-        String exampleTargetProject = properties.getProperty("exampleTargetProject");
-        String targetPackage = exampleTargetPackage; //$NON-NLS-1$
-        String targetProject = exampleTargetProject; //$NON-NLS-1$
-
-        if (StringUtility.stringHasValue(targetPackage)) {
-        	javaModelGeneratorConfiguration.setTargetPackage(targetPackage);
-        }
-        
-        if (StringUtility.stringHasValue(targetProject)) {
-        	javaModelGeneratorConfiguration.setTargetProject(targetProject);
-        }
-        
+        javaModelGeneratorConfiguration.setTargetPackage(exampleTargetPackage);
+        javaModelGeneratorConfiguration.setTargetProject(exampleTargetProject);
         introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         // 添加example基类
@@ -273,26 +273,6 @@ public class ExampleClassPlugin extends PluginAdapter {
             }
         }
         methods.removeAll(removingMethods);
-    }
-
-    /**
-     * 根据Model类的全路径名称，生成Base Model类的全路径名(包括类名)。
-     * 比如根据com.company.model.User，生成com.company.model.base.BaseUser
-     * 
-     * @param oldModelType
-     * @return 新的名称
-     */
-    private String genBaseClassName(String oldModelType) {
-        int indexOfLastDot = oldModelType.lastIndexOf('.');
-        String className="";
-        
-        if("".equals(baseModelNamePrefix)) {
-        	className=fullModelPackage + oldModelType.substring(indexOfLastDot + 1);
-        }else {
-        	className=fullModelPackage + "." + baseModelNamePrefix + oldModelType.substring(indexOfLastDot + 1);
-        }
-        
-        return className;
     }
 
 }

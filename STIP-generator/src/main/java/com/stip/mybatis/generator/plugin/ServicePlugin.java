@@ -8,6 +8,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
 import org.mybatis.generator.logging.Log;
@@ -38,6 +39,10 @@ public class ServicePlugin extends PluginAdapter {
     
     private String modelClassName;
     
+    private String baseServicePackageName=".service.impl";
+    
+    private String baseServiceInterfacePackageName=".service";
+    
     public ServicePlugin() {
         shellCallback = new DefaultShellCallback(false);
     }
@@ -46,16 +51,36 @@ public class ServicePlugin extends PluginAdapter {
      * 验证传入的service包是否合法
      */
     public boolean validate(List<String> warnings) {
-    	serviceTargetDir = properties.getProperty("serviceTargetDir");
-        boolean valid = StringUtility.stringHasValue(serviceTargetDir);
-
         serviceTargetPackage = properties.getProperty("serviceTargetPackage");
-        boolean valid2 = StringUtility.stringHasValue(serviceTargetPackage);
+        if (!StringUtility.stringHasValue(serviceTargetPackage)) {
+        	serviceTargetPackage = properties.getProperty("targetPackage");
+            if (!StringUtility.stringHasValue(serviceTargetPackage)) {
+                return false;
+            }else {
+            	serviceTargetPackage+=baseServicePackageName;
+            }
+        }
         
         serviceInterFacePackage = properties.getProperty("serviceInterfaceTargetPackage");
-        boolean valid3 = StringUtility.stringHasValue(serviceInterFacePackage);
+        if (!StringUtility.stringHasValue(serviceInterFacePackage)) {
+        	serviceInterFacePackage = properties.getProperty("targetPackage");
+        	if (!StringUtility.stringHasValue(serviceInterFacePackage)) {
+        		return false;
+        	}else {
+        		serviceInterFacePackage+=baseServiceInterfacePackageName;
+        	}
+        }
+        
+        serviceTargetDir = properties.getProperty("serviceTargetDir");
+        if (!StringUtility.stringHasValue(serviceTargetDir)) {
+        	serviceTargetDir = properties.getProperty("targetProject");
+        	if (!StringUtility.stringHasValue(serviceTargetDir)) {
+        		return false;
+        	}
+        }
+        
+		return true;
 
-        return valid && valid2 && valid3;
     }
 
     @Override
@@ -63,11 +88,10 @@ public class ServicePlugin extends PluginAdapter {
     	// 初始化两参数为空
         serviceClassName = null;
 
-        serviceClassName = introspectedTable.getBaseRecordType();
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        modelClassName=introspectedTable.getBaseRecordType().replaceAll(modelTargetPackage, "");
-        superServiceUrl=serviceInterFacePackage+modelClassName+"Service";
-        serviceClassName=serviceTargetPackage+modelClassName+"ServiceImpl";
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        modelClassName = modelJavaType.getShortName();
+        superServiceUrl=serviceInterFacePackage+"."+modelClassName+"Service";
+        serviceClassName=serviceTargetPackage+"."+modelClassName+"ServiceImpl";
         introspectedTable.setBaseServiceType(serviceClassName);
     }
     
@@ -81,6 +105,11 @@ public class ServicePlugin extends PluginAdapter {
 		} else {
 			pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();// TODO:默认不考虑联合主键的情况
 		}
+		
+		JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        javaModelGeneratorConfiguration.setTargetPackage(serviceTargetPackage);
+        javaModelGeneratorConfiguration.setTargetProject(serviceTargetDir);
+        introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
         
         // 添加基类
         FullyQualifiedJavaType superClazzType = new FullyQualifiedJavaType(baseServiceSuperClass);

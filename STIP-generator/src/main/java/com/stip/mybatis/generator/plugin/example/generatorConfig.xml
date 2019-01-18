@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE generatorConfiguration 
-  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" 
-  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
 	<properties resource="generator.properties" />
@@ -11,8 +9,12 @@
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
 		<plugin type="com.stip.mybatis.generator.plugin.EqualsHashCodePlugin" />
+		<plugin type="com.stip.mybatis.generator.plugin.MysqlPaginationPlugin"/>
+		<plugin type="com.stip.mybatis.generator.plugin.BooleanColumnPlugin" />
 
 		<plugin type="com.stip.mybatis.generator.plugin.ExampleClassPlugin">
+			<property name="targetProject" value="${targetProject}" />
+			<property name="targetPackage" value="${targetPackage}" />
 			<property name="exampleTargetPackage" value="${exampleTargetPackage}" />
 			<property name="xmlTargetPackage" value="${xmlTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
@@ -20,39 +22,44 @@
 		</plugin>
 
 		<plugin type="com.stip.mybatis.generator.plugin.ExtendXmlMapperPlugin">
+			<property name="targetProject" value="${targetProject}" />
+			<property name="targetPackage" value="${targetPackage}" />
 			<property name="exampleTargetPackage" value="${exampleTargetPackage}" />
 			<property name="xmlTargetPackage" value="${xmlTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
 
 		<plugin type="com.stip.mybatis.generator.plugin.ModelClassPlugin">
+			<property name="targetProject" value="${targetProject}" />
+			<property name="targetPackage" value="${targetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 			<property name="modelTargetProject" value="${modelTargetDir}" />
 		</plugin>
 
 		<plugin type="com.stip.mybatis.generator.plugin.MapperPlugin">
+			<property name="targetProject" value="${targetProject}" />
+			<property name="targetPackage" value="${targetPackage}" />
 			<property name="daoTargetDir" value="${daoTargetDir}" />
 			<property name="daoTargetPackage" value="${daoTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
 		
 		<plugin type="com.stip.mybatis.generator.plugin.ServiceInterfacePlugin">
+			<property name="targetProject" value="${targetProject}" />
+			<property name="targetPackage" value="${targetPackage}" />
 			<property name="serviceTargetDir" value="${serviceTargetDir}" />
 			<property name="serviceInterfaceTargetPackage" value="${serviceInterfaceTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
 		
 		<plugin type="com.stip.mybatis.generator.plugin.ServicePlugin">
+			<property name="targetProject" value="${targetProject}" />
+			<property name="targetPackage" value="${targetPackage}" />
 			<property name="serviceTargetDir" value="${serviceTargetDir}" />
 			<property name="serviceTargetPackage" value="${serviceTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 			<property name="serviceInterfaceTargetPackage" value="${serviceInterfaceTargetPackage}" />
 		</plugin>
-		
-		<plugin type="com.stip.mybatis.generator.plugin.MysqlPaginationPlugin">
-		</plugin>
-
-		<plugin type="com.stip.mybatis.generator.plugin.BooleanColumnPlugin" />
 
 		<commentGenerator>
 			<property name="suppressAllComments" value="true" />
@@ -65,16 +72,14 @@
 		</javaTypeResolver>
 		
 		<!--domain 代码 生成路径 -->
-		<javaModelGenerator targetPackage="${modelTargetPackage}" targetProject="${modelTargetDir}"> 
-			<property name="enableSubPackages" value="true" />
+		<javaModelGenerator targetPackage="${targetPackage}" targetProject="${targetProject}"> 
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
-
+		
 		<!--mapper 代码 生成路径 -->
-		<sqlMapGenerator targetPackage="${xmlTargetPackage}" targetProject="${xmlTargetDir}">
+		<sqlMapGenerator targetPackage="${targetPackage}" targetProject="${targetProject}">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
-
-		<table tableName="sys_user_role" alias="sysUserRole" mapperName="SysUserRoleDao" domainObjectName="SysUserRole"></table>
+		<table tableName="test" alias="test" mapperName="TestDao" domainObjectName="Test"></table>
 	</context>
 </generatorConfiguration>

@@ -13,6 +13,7 @@ import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
 import org.mybatis.generator.exception.ShellException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.mybatis.generator.internal.util.StringUtility;
@@ -38,6 +39,8 @@ public class MapperPlugin extends PluginAdapter {
     private String daoTargetDir;
 
     private String daoTargetPackage;
+    
+    private String baseMapperPackageName=".dao";
 
     /**
      * Model基类文件包名
@@ -58,11 +61,23 @@ public class MapperPlugin extends PluginAdapter {
     }
 
     public boolean validate(List<String> warnings) {
-        daoTargetDir = properties.getProperty("daoTargetDir");
-        boolean valid = StringUtility.stringHasValue(daoTargetDir);
-
         daoTargetPackage = properties.getProperty("daoTargetPackage");
-        boolean valid2 = StringUtility.stringHasValue(daoTargetPackage);
+        if (!StringUtility.stringHasValue(daoTargetPackage)) {
+        	daoTargetPackage = properties.getProperty("targetPackage");
+            if (!StringUtility.stringHasValue(daoTargetPackage)) {
+                return false;
+            }else {
+            	daoTargetPackage+=baseMapperPackageName;
+            }
+        }
+        
+        daoTargetDir = properties.getProperty("daoTargetDir");
+        if (!StringUtility.stringHasValue(daoTargetDir)) {
+        	daoTargetDir = properties.getProperty("targetProject");
+        	if (!StringUtility.stringHasValue(daoTargetDir)) {
+        		return false;
+        	}
+        }
 
         daoSuperClass = properties.getProperty("daoSuperClass");
         if (!StringUtility.stringHasValue(daoSuperClass)) {
@@ -78,8 +93,8 @@ public class MapperPlugin extends PluginAdapter {
         if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
             baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
-
-        return valid && valid2;
+        
+		return true;
     }
     
     @Override
@@ -87,20 +102,26 @@ public class MapperPlugin extends PluginAdapter {
         // 初始化两参数为空
         mapperClassName = null;
 
-        mapperClassName = introspectedTable.getBaseRecordType();
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        mapperClassName=introspectedTable.getBaseRecordType().replaceAll(modelTargetPackage, "");
-        mapperClassName=daoTargetPackage+mapperClassName+"Dao";
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        mapperClassName = modelJavaType.getShortName();
+        mapperClassName=daoTargetPackage+"."+mapperClassName+"Dao";
         introspectedTable.setMyBatis3JavaMapperType(mapperClassName);
+        introspectedTable.setMyBatis3XmlMapperPackage(daoTargetPackage);
     }
 
 	@Override
 	public List<GeneratedJavaFile> contextGenerateAdditionalJavaFiles(IntrospectedTable introspectedTable) {
 		logger.debug("开始：生成java dao文件");
-
-		JavaFormatter javaFormatter = context.getJavaFormatter();
-
 		FullyQualifiedJavaType pkType = null;
+		JavaFormatter javaFormatter = context.getJavaFormatter();
+		String subModelExampleType = "";
+		String subModelType = "";
+		
+        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
+        javaModelGeneratorConfiguration.setTargetPackage(daoTargetPackage);
+        javaModelGeneratorConfiguration.setTargetProject(daoTargetDir);
+        introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
+
 		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 		if (primaryKeyColumns.isEmpty()) {
 			pkType = new FullyQualifiedJavaType("java.lang.String");
@@ -110,8 +131,6 @@ public class MapperPlugin extends PluginAdapter {
 		}
 
 		List<GeneratedJavaFile> mapperJavaFiles = new ArrayList<GeneratedJavaFile>();
-		String subModelExampleType = "";
-		String subModelType = "";
 		
 		String subExampleType = introspectedTable.getExampleType();
 		subModelExampleType = subExampleType;

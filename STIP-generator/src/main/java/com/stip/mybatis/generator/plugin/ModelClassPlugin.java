@@ -48,10 +48,14 @@ public class ModelClassPlugin extends PluginAdapter {
     private String baseModelNamePrefix;
 
     /**
-     * Model类文件包名
+     * 类的主键字段名, 默认为sid
      */
-    private String fullModelPackage;
-
+    private String baseModelPackageName = ".entity";
+    
+    private String modelTargetPackage;
+    
+    private String modelTargetProject;
+    
     /**
      * 类的主键字段名, 默认为sid
      */
@@ -85,7 +89,9 @@ public class ModelClassPlugin extends PluginAdapter {
         // 初始化两参数为空
         modelClassName = null;
 
-        modelClassName = introspectedTable.getBaseRecordType();
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        modelClassName = modelJavaType.getShortName();
+        modelClassName=modelTargetPackage+"."+modelClassName;
         introspectedTable.setBaseRecordType(modelClassName);
     }
 
@@ -100,16 +106,22 @@ public class ModelClassPlugin extends PluginAdapter {
             baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
 
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
+        modelTargetPackage = properties.getProperty("modelTargetPackage");
         if (!StringUtility.stringHasValue(modelTargetPackage)) {
-            return false;
+        	modelTargetPackage = properties.getProperty("targetPackage");
+            if (!StringUtility.stringHasValue(modelTargetPackage)) {
+                return false;
+            }else {
+            	modelTargetPackage+=baseModelPackageName;
+            }
         }
-
-        String baseModelPackage = properties.getProperty("baseModelPackage");
-        if (StringUtility.stringHasValue(baseModelPackage)) {
-            fullModelPackage = modelTargetPackage + "." + baseModelPackage;
-        } else {
-            fullModelPackage = modelTargetPackage + "." + DEFAULT_BASE_MODEL_PACKAGE;
+        
+        modelTargetProject = properties.getProperty("modelTargetDir");
+        if (!StringUtility.stringHasValue(modelTargetProject)) {
+        	modelTargetProject = properties.getProperty("targetProject");
+        	if (!StringUtility.stringHasValue(modelTargetProject)) {
+        		return false;
+        	}
         }
 
         String baseModelSuperClazz = properties.getProperty("baseModelSuperClass");
@@ -132,15 +144,8 @@ public class ModelClassPlugin extends PluginAdapter {
         logger.debug("开始：修改Model文件");
         
         JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
-
-        String modelTargetPackage = properties.getProperty("modelTargetPackage");
-        String modelTargetProject = properties.getProperty("modelTargetProject");
-        String targetPackage = modelTargetPackage; //$NON-NLS-1$
-        String targetProject = modelTargetProject; //$NON-NLS-1$
-
-        javaModelGeneratorConfiguration.setTargetPackage(targetPackage);
-        javaModelGeneratorConfiguration.setTargetProject(targetProject);
-        
+        javaModelGeneratorConfiguration.setTargetPackage(modelTargetPackage);
+        javaModelGeneratorConfiguration.setTargetProject(modelTargetProject);
         introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
 
         // 添加基类
