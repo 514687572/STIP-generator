@@ -1,11 +1,11 @@
-﻿**STIP-generator**
- 实现mybatais代码生成插件
- 针对Mysql批量删除、分页、批量插入和多模块生成进行优化。
+﻿# STIP-generator
+ ### STIP-generator mybatais代码生成插件实现功能：
+ 
+ 1. 针对Mysql批量删除、分页、批量插入和多模块生成进行优化;
+ 2. 可以直接生成 mapper、model、example、service类和service接口类;
+ 3. 插件适用于单体架构、微服务和分布式，并对数据库中java关键字进行处理;
 
- 1. 可以直接生成 mapper、model、example、service类和service接口类，
- 2. 插件适用于单体架构、微服务和分布式，并对数据库中java关键字进行处理，
-
-添加maven依赖
+### 添加maven依赖
 ```
 <dependency>
   <groupId>com.github.514687572</groupId>
@@ -13,7 +13,7 @@
   <version>2.0.0</version>
 </dependency>
 ```
-在pom文件中配置插件和配置文件地址
+### pom文件中配置插件和配置文件地址
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
@@ -102,8 +102,8 @@
 </generatorConfiguration>
 ```
 
-generator.properties两种配置方式如下：
-详细版配置（自定生成包结构和输出项目路径）
+### generator.properties两种配置方式如下：
+#### 详细版配置（自定生成包结构和输出项目路径）
 
 ```
 jdbc.driverClassName=com.mysql.jdbc.Driver
@@ -130,7 +130,7 @@ xmlTargetDir=./src/main/java
 xmlTargetPackage=com.stip.net.dao
 ```
 
-简洁版配置（按照默认包名在基础包上扩展）
+#### 简洁版配置（按照默认包名在基础包上扩展）
 ```
 jdbc.driverClassName=com.mysql.jdbc.Driver
 jdbc.url=jdbc:mysql://localhost/lottery?useUnicode=true&characterEncoding=UTF-8
