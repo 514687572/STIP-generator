@@ -1,9 +1,9 @@
-﻿#STIP-generator
-实现mybatais代码生成插件
+﻿**STIP-generator**
+ 实现mybatais代码生成插件
  针对Mysql批量删除、分页、批量插入和多模块生成进行优化。
 
-##1、可以直接生成 mapper、model、example、service类和service接口类，
-##2、插件适用于单体架构、微服务和分布式，并对数据库中java关键字进行处理，
+ 1. 可以直接生成 mapper、model、example、service类和service接口类，
+ 2. 插件适用于单体架构、微服务和分布式，并对数据库中java关键字进行处理，
 
 添加maven依赖
 ```
@@ -149,5 +149,5 @@ targetProject=./src/main/java
 
 如有疑问可邮件联系514687572@qq.com
 
-插件源码地址：https://github.com/514687572/STIP-generator
+[插件源码地址](https://github.com/514687572/STIP-generator)
 
