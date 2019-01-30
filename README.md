@@ -15,6 +15,8 @@
 ```
 ### pom文件中配置插件和配置文件地址
 ```
+generator.properties配置文件和下面的这个XML配置文件都放在resources目录中
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
@@ -103,6 +105,19 @@
 ```
 
 ### generator.properties两种配置方式如下：
+
+#### 简洁版配置（按照默认包名在基础包上扩展）推荐
+```
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost/lottery?useUnicode=true&characterEncoding=UTF-8
+jdbc.username=root
+jdbc.password=123456
+
+#\u7B80\u5316\u914D\u7F6E\u4E00(\u63A8\u8350)
+targetPackage=com.stip.net
+targetProject=./src/main/java
+```
+
 #### 详细版配置（自定生成包结构和输出项目路径）
 
 ```
@@ -128,18 +143,6 @@ daoTargetPackage=com.stip.net.dao
 
 xmlTargetDir=./src/main/java
 xmlTargetPackage=com.stip.net.dao
-```
-
-#### 简洁版配置（按照默认包名在基础包上扩展）
-```
-jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost/lottery?useUnicode=true&characterEncoding=UTF-8
-jdbc.username=root
-jdbc.password=123456
-
-#\u7B80\u5316\u914D\u7F6E\u4E00(\u63A8\u8350)
-targetPackage=com.stip.net
-targetProject=./src/main/java
 ```
 
 生成方法如下
