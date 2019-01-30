@@ -5,7 +5,7 @@
  2. 可以直接生成 mapper、model、example、service类和service接口类;
  3. 插件适用于单体架构、微服务和分布式，并对数据库中java关键字进行处理;
  
- [完整使用](https://github.com/514687572/STIP-generator-example.git)
+ [完整使用例子](https://github.com/514687572/STIP-generator-example.git)
 
 ### 添加maven依赖
 ```
