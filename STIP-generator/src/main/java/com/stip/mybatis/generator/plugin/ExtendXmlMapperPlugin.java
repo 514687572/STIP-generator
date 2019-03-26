@@ -14,6 +14,7 @@ import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.OutputUtilities;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -72,6 +73,8 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
     
     private String extMapperPackageName=".ext";
     
+    private String mapperClassName;
+    
     /**
 	 * 
 	 */
@@ -94,6 +97,8 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
     public void initialized(IntrospectedTable introspectedTable) {
         // 初始化两参数为空
         modelClassName = null;
+        mapperClassName=null;
+        
         String exampleTargetPackage = properties.getProperty("exampleTargetPackage");
         
         if (!StringUtility.stringHasValue(exampleTargetPackage)) {
@@ -111,6 +116,23 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
             	modelTargetPackage+=baseModelPackageName;
             }
         }
+        
+        extDaoTargetPackage = properties.getProperty("daoTargetPackage");
+        if (!StringUtility.stringHasValue(extDaoTargetPackage)) {
+        	extDaoTargetPackage = properties.getProperty("targetPackage");
+            if (StringUtility.stringHasValue(extDaoTargetPackage)) {
+            	extDaoTargetPackage=extDaoTargetPackage+DaoTargetPackageName+extMapperPackageName;
+            }
+        }else {
+        	extDaoTargetPackage=extDaoTargetPackage+DaoTargetPackageName+extMapperPackageName;
+        }
+        
+        fullExtXmlPackage=extDaoTargetPackage;
+        
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        mapperClassName = modelJavaType.getShortName();
+        mapperClassName=extDaoTargetPackage+"."+mapperClassName+"Dao";
+        introspectedTable.setMyBatis3JavaMapperType(mapperClassName);
         
     }
     
@@ -260,6 +282,22 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
         if (exampleClassName != null) {
             introspectedTable.setExampleType(exampleClassName);
         }
+        
+        String edtp = properties.getProperty("daoTargetPackage");
+        if (!StringUtility.stringHasValue(edtp)) {
+        	edtp = properties.getProperty("targetPackage");
+            if (StringUtility.stringHasValue(edtp)) {
+            	edtp=edtp+DaoTargetPackageName;
+            }
+        }else {
+        	edtp=edtp+DaoTargetPackageName;
+        }
+        
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        mapperClassName = modelJavaType.getShortName();
+        mapperClassName=edtp+"."+mapperClassName+"Dao";
+        introspectedTable.setMyBatis3JavaMapperType(mapperClassName);
+        introspectedTable.setMyBatis3FallbackSqlMapNamespace(mapperClassName);
 
         List<GeneratedXmlFile> extXmlFiles = new ArrayList<GeneratedXmlFile>(1);
         List<GeneratedXmlFile> xmlFiles = introspectedTable.getGeneratedXmlFiles();
@@ -279,7 +317,7 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
             document.setRootElement(root);
 
             // 生成新的空的xml 但是不覆盖
-            root.addAttribute(new Attribute("namespace", introspectedTable.getMyBatis3FallbackSqlMapNamespace()));
+            root.addAttribute(new Attribute("namespace", mapperClassName));
             root.addElement(new TextElement("<!--"));
             StringBuilder sb = new StringBuilder();
             sb.append("  文件的生成时间： ");
@@ -324,19 +362,7 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
         if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
             baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
         }
-
-        extDaoTargetPackage = properties.getProperty("daoTargetPackage");
-        if (!StringUtility.stringHasValue(extDaoTargetPackage)) {
-        	extDaoTargetPackage = properties.getProperty("targetPackage");
-            if (!StringUtility.stringHasValue(extDaoTargetPackage)) {
-                return false;
-            }else {
-            	extDaoTargetPackage=extDaoTargetPackage+DaoTargetPackageName+extMapperPackageName;
-            }
-        }
         
-        fullExtXmlPackage=extDaoTargetPackage;
-
         return true;
 	}
 	
