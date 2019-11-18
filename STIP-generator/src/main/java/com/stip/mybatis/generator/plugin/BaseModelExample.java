@@ -6,7 +6,7 @@ package com.stip.mybatis.generator.plugin;
  * @author cja
  * 
  */
-public class BaseModelExample {
+public class BaseModelExample extends AbstractExample{
 	protected Integer pageNum;
 	protected Integer records;
 	protected Integer fromRowNum;

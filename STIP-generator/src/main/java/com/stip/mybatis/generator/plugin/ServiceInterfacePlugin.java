@@ -25,6 +25,7 @@ public class ServiceInterfacePlugin extends PluginAdapter {
 	public static Log logger = LogFactory.getLog(ServiceInterfacePlugin.class);
     private String baseServiceSuperClass = "IService";
     private String baseServiceSuperClassName = "com.stip.mybatis.generator.plugin.IService";
+	private static final String DEFAULT_EXAMPLE_CLASS_NAME = "com.stip.mybatis.generator.plugin.BaseExample";
 
     private ShellCallback shellCallback = null;
 
@@ -103,7 +104,7 @@ public class ServiceInterfacePlugin extends PluginAdapter {
 		
 		FullyQualifiedJavaType subModelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
 		serviceInterface.addImportedType(subModelJavaType);
-		FullyQualifiedJavaType subModelExampleJavaType = new FullyQualifiedJavaType(introspectedTable.getExampleType());
+		FullyQualifiedJavaType subModelExampleJavaType = new FullyQualifiedJavaType(DEFAULT_EXAMPLE_CLASS_NAME);
 		serviceInterface.addImportedType(subModelExampleJavaType);
 		
 		// 添加泛型支持

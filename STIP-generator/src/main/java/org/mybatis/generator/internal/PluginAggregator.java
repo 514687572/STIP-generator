@@ -147,7 +147,7 @@ public final class PluginAggregator implements Plugin {
         return rc;
     }
 
-    @Override
+/*    @Override
     public boolean modelExampleClassGenerated(TopLevelClass tlc,
             IntrospectedTable introspectedTable) {
         boolean rc = true;
@@ -160,7 +160,7 @@ public final class PluginAggregator implements Plugin {
         }
 
         return rc;
-    }
+    }*/
     
 	@Override
 	public boolean serviceClassGenerated(TopLevelClass tlc, IntrospectedTable introspectedTable) {

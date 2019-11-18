@@ -107,7 +107,7 @@ public class ExampleClassPlugin extends PluginAdapter {
      * @see org.mybatis.generator.api.Plugin#validate(java.util.List)
      */
     public boolean validate(List<String> warnings) {
-        logger.debug("开始：validate");
+/*        logger.debug("开始：validate");
 
         baseModelNamePrefix = properties.getProperty("baseModelNamePrefix");
         if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
@@ -147,12 +147,12 @@ public class ExampleClassPlugin extends PluginAdapter {
         String baseCriteriaSuperClazz = properties.getProperty("baseCriteriaSuperClass");
         if (StringUtility.stringHasValue(baseCriteriaSuperClazz)) {
             baseCriteriaSuperClass = baseCriteriaSuperClazz;
-        }
+        }*/
 
         return true;
     }
 
-    @Override
+/*    @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         logger.debug("开始：修改Example文件");
         
@@ -196,7 +196,7 @@ public class ExampleClassPlugin extends PluginAdapter {
         logger.debug("完成：修改Example文件");
 
         return super.modelExampleClassGenerated(topLevelClass, introspectedTable);
-    }
+    }*/
 
     /**
      * 清理Example的多余属性与方法，已经迁移到父类了

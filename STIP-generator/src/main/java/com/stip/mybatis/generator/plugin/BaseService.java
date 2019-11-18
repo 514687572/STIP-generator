@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @param <TE>对应example
  * @param <PK>主键类型
  */
-public abstract class BaseService<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> implements IService<T, TE, PK>{
+public abstract class BaseService<T extends BaseModel<PK>, TE extends AbstractExample, PK extends Serializable> implements IService<T, TE, PK>{
     @Autowired
     protected GenericMapper<T, TE, PK> dao;
 

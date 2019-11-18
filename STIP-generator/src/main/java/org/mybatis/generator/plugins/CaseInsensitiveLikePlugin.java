@@ -50,7 +50,7 @@ public class CaseInsensitiveLikePlugin extends PluginAdapter {
         return true;
     }
 
-    @Override
+/*    @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable) {
 
@@ -102,5 +102,5 @@ public class CaseInsensitiveLikePlugin extends PluginAdapter {
         }
 
         return true;
-    }
+    }*/
 }

@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
  * @param <TE>对应的example
  * @param <PK>主键类型
  */
-public interface IService<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> {
+public interface IService<T extends BaseModel<PK>, TE extends AbstractExample, PK extends Serializable> {
 
 	int countByExample(TE example);
 	

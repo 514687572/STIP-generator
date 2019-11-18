@@ -192,18 +192,17 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         topLevelClass.addMethod(method);
 
         // now generate the inner class that holds the AND conditions
-        topLevelClass
-                .addInnerClass(getGeneratedCriteriaInnerClass(topLevelClass));
+        topLevelClass.addInnerClass(getGeneratedCriteriaInnerClass(topLevelClass));
 
         topLevelClass.addInnerClass(getCriteriaInnerClass());
 
         topLevelClass.addInnerClass(getCriterionInnerClass());
 
         List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
-        if (context.getPlugins().modelExampleClassGenerated(
+/*        if (context.getPlugins().modelExampleClassGenerated(
                 topLevelClass, introspectedTable)) {
             answer.add(topLevelClass);
-        }
+        }*/
         return answer;
     }
 
@@ -397,7 +396,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
         List<String> criteriaLists = new ArrayList<String>();
         criteriaLists.add("criteria"); //$NON-NLS-1$
 
-        for (IntrospectedColumn introspectedColumn : introspectedTable
+/*        for (IntrospectedColumn introspectedColumn : introspectedTable
                 .getNonBLOBColumns()) {
             if (stringHasValue(introspectedColumn
                     .getTypeHandler())) {
@@ -405,7 +404,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
                         introspectedColumn, method, answer);
                 criteriaLists.add(name);
             }
-        }
+        }*/
 
         // now generate the isValid method
         method = new Method();
@@ -675,7 +674,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
             answer.addMethod(method);
         }
 
-        for (IntrospectedColumn introspectedColumn : introspectedTable
+/*        for (IntrospectedColumn introspectedColumn : introspectedTable
                 .getNonBLOBColumns()) {
             topLevelClass.addImportedType(introspectedColumn
                     .getFullyQualifiedJavaType());
@@ -703,7 +702,7 @@ public class ExampleGenerator extends AbstractJavaGenerator {
                     introspectedColumn, true));
             answer.addMethod(getSetBetweenOrNotBetweenMethod(
                     introspectedColumn, false));
-        }
+        }*/
 
         return answer;
     }

@@ -30,7 +30,8 @@ public class MapperPlugin extends PluginAdapter {
 	public static Log logger = LogFactory.getLog(MapperPlugin.class);
     private static final String DEFAULT_DAO_SUPER_CLASS = "GenericMapper";
     private static final String DEFAULT_DAO_SUPER_CLASS_NAME = "com.stip.mybatis.generator.plugin.GenericMapper";
-    
+    private static final String DEFAULT_EXAMPLE_CLASS_NAME = "com.stip.mybatis.generator.plugin.BaseExample";
+
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
@@ -132,7 +133,7 @@ public class MapperPlugin extends PluginAdapter {
 
 		List<GeneratedJavaFile> mapperJavaFiles = new ArrayList<GeneratedJavaFile>();
 		
-		String subExampleType = introspectedTable.getExampleType();
+		String subExampleType = DEFAULT_EXAMPLE_CLASS_NAME;
 		subModelExampleType = subExampleType;
 		
 		subModelType = introspectedTable.getBaseRecordType();
@@ -142,6 +143,8 @@ public class MapperPlugin extends PluginAdapter {
 		mapperInterface.addJavaDocLine(" /**");
 		mapperInterface.addJavaDocLine(" * 可添加自定义查询语句，方便后续扩展");
 		mapperInterface.addJavaDocLine(" **/");
+
+		introspectedTable.setExampleType(subExampleType);
 
 		FullyQualifiedJavaType subModelJavaType = new FullyQualifiedJavaType(subModelType);
 		mapperInterface.addImportedType(subModelJavaType);

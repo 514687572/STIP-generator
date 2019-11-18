@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Param;
  * @param <TE> base example class
  * @param <PK> ID
  */
-public interface GenericMapper<T extends BaseModel<PK>, TE extends BaseModelExample, PK extends Serializable> {
+public interface GenericMapper<T extends BaseModel<PK>, TE extends AbstractExample, PK extends Serializable> {
 	int countByExample(TE example);
 	
 	int deleteByExample(TE example);

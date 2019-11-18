@@ -304,11 +304,11 @@ public abstract class PluginAdapter implements Plugin {
     	return true;
     }
 
-    @Override
+/*    @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
             IntrospectedTable introspectedTable) {
         return true;
-    }
+    }*/
 
     @Override
     public boolean modelFieldGenerated(Field field,

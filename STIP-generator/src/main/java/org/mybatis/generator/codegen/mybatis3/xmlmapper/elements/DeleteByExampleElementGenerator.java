@@ -15,6 +15,7 @@
  */
 package org.mybatis.generator.codegen.mybatis3.xmlmapper.elements;
 
+import org.apache.tools.ant.util.StringUtils;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
@@ -45,7 +46,9 @@ public class DeleteByExampleElementGenerator extends
 
         StringBuilder sb = new StringBuilder();
         sb.append("delete ");
-        sb.append(introspectedTable.getTableConfiguration().getAlias());
+        if(null!=introspectedTable.getTableConfiguration().getAlias()&&!"".equals(introspectedTable.getTableConfiguration().getAlias())){
+            sb.append(introspectedTable.getTableConfiguration().getAlias());
+        }
         sb.append(" from "); //$NON-NLS-1$
         sb.append(introspectedTable
                 .getAliasedFullyQualifiedTableNameAtRuntime());
