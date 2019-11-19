@@ -73,6 +73,7 @@ public class ShellRunner {
         List<String> warnings = new ArrayList<String>();
 
         String configfile = arguments.get(CONFIG_FILE);
+
         File configurationFile = new File(configfile);
         if (!configurationFile.exists()) {
             writeLine(getString("RuntimeError.1", configfile)); //$NON-NLS-1$

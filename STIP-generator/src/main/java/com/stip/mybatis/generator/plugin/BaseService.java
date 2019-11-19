@@ -51,8 +51,8 @@ public abstract class BaseService<T extends BaseModel<PK>, TE extends AbstractEx
 		return dao.updateByExampleSelective(record, example);
 	}
 
-	public int updateByExample(@Param("record") T record, @Param("example") TE example) {
-		return dao.updateByExampleSelective(record, example);
+	public int updateByExample(@Param("example") TE example) {
+		return dao.updateByExample(example);
 	}
 
 	public int updateByPrimaryKeySelective(T record) {

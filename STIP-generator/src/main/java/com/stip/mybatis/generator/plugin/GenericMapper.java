@@ -9,9 +9,11 @@ import org.apache.ibatis.annotations.Param;
 /**
  * @author cja
  *
+ * base mapper interface
+ *
  * @param <T> Model class
- * @param <TE> base example class
- * @param <PK> ID
+ * @param <TE> abstract base example class
+ * @param <PK> primary key
  */
 public interface GenericMapper<T extends BaseModel<PK>, TE extends AbstractExample, PK extends Serializable> {
 	int countByExample(TE example);
@@ -30,7 +32,7 @@ public interface GenericMapper<T extends BaseModel<PK>, TE extends AbstractExamp
 
 	int updateByExampleSelective(@Param("record") T record, @Param("example") TE example);
 
-	int updateByExample(@Param("record") T record, @Param("example") TE example);
+	int updateByExample(@Param("example") TE example);
 
 	int updateByPrimaryKeySelective(T record);
 

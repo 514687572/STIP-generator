@@ -30,7 +30,7 @@ public interface IService<T extends BaseModel<PK>, TE extends AbstractExample, P
 
 	int updateByExampleSelective(@Param("record") T record, @Param("example") TE example);
 
-	int updateByExample(@Param("record") T record, @Param("example") TE example);
+	int updateByExample(@Param("example") TE example);
 
 	int updateByPrimaryKeySelective(T record);
 
