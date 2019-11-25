@@ -31,12 +31,7 @@ jdbc.driverClassName=com.mysql.jdbc.Driver
 jdbc.url=jdbc:mysql://localhost/lottery?useUnicode=true&characterEncoding=UTF-8
 jdbc.username=root
 jdbc.password=123456
-```
 
-
-#### 精简配置
-
-```
 targetPackage=com.stip.net
 targetProject=./src/main/java
 ```
