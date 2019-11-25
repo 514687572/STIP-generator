@@ -18,7 +18,7 @@
 </dependency>
 ```
 ### pom文件中配置插件和配置文件地址
-```
+
 generator.properties配置文件和下面的这个XML配置文件都放在resources目录中
 
 [配置文件例子](https://github.com/514687572/STIP-generator/blob/master/STIP-generator/src/main/java/com/stip/mybatis/generator/plugin/example/generatorConfig.xml)
@@ -31,8 +31,12 @@ jdbc.driverClassName=com.mysql.jdbc.Driver
 jdbc.url=jdbc:mysql://localhost/lottery?useUnicode=true&characterEncoding=UTF-8
 jdbc.username=root
 jdbc.password=123456
+```
 
-#\u7B80\u5316\u914D\u7F6E\u4E00(\u63A8\u8350)
+
+#### 精简配置
+
+```
 targetPackage=com.stip.net
 targetProject=./src/main/java
 ```
