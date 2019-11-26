@@ -1,4 +1,4 @@
-﻿# STIP-generator
+﻿# STIP-generator Mybatis 代码生成插件
  ### STIP-generator mybatais代码生成插件实现功能：
  
  1. 针对Mysql批量删除、分页、批量插入和多模块生成进行优化；
