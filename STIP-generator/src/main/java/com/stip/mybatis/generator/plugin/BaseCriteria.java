@@ -8,7 +8,7 @@ import java.util.List;
  * @author cja
  *
  */
-public abstract class BaseCriteria {
+public abstract class BaseCriteria extends Criterion {
     protected List<Criterion> criteria;
 
     protected BaseCriteria() {
@@ -28,24 +28,30 @@ public abstract class BaseCriteria {
         return criteria;
     }
 
-    protected void addCriterion(String condition) {
+    protected BaseExample.Criteria addCriterion(String condition) {
         if (condition == null) {
             throw new RuntimeException("Value for condition cannot be null");
         }
         criteria.add(new Criterion(condition));
+
+        return (BaseExample.Criteria) this;
     }
 
-    protected void addCriterion(String condition, Object value, String property) {
+    protected BaseExample.Criteria addCriterion(String condition, Object value, String property) {
         if (value == null) {
             throw new RuntimeException("Value for " + property + " cannot be null");
         }
         criteria.add(new Criterion(condition, value));
+
+        return (BaseExample.Criteria) this;
     }
 
-    protected void addCriterion(String condition, Object value1, Object value2, String property) {
+    protected BaseExample.Criteria addCriterion(String condition, Object value1, Object value2, String property) {
         if (value1 == null || value2 == null) {
             throw new RuntimeException("Between values for " + property + " cannot be null");
         }
         criteria.add(new Criterion(condition, value1, value2));
+
+        return (BaseExample.Criteria) this;
     }
 }

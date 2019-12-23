@@ -56,6 +56,9 @@ public class Criterion {
         return typeHandler;
     }
 
+    protected Criterion() {
+    }
+
     protected Criterion(String condition) {
         super();
         this.condition = condition;

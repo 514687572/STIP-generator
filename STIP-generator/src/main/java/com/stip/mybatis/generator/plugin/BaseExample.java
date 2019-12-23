@@ -51,16 +51,16 @@ public class BaseExample extends AbstractExample{
     }
 
     protected abstract static class GeneratedCriteria extends BaseCriteria {
-        public void addCriterion(String condition) {
-            super.addCriterion(condition);
+        public Criteria addCriterion(String condition) {
+            return super.addCriterion(condition);
         }
 
-        public void addCriterion(String condition, Object value, String property) {
-            super.addCriterion(condition, value, property);
+        public Criteria addCriterion(String condition, Object value, String property) {
+            return super.addCriterion(condition, value, property);
         }
 
-        public void addCriterion(String condition, Object value1, Object value2, String property) {
-            super.addCriterion(condition, value1, property);
+        public Criteria addCriterion(String condition, Object value1, Object value2, String property) {
+            return super.addCriterion(condition, value1, property);
         }
     }
 
