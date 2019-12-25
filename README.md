@@ -17,7 +17,7 @@
 <dependency>
   <groupId>com.github.514687572</groupId>
   <artifactId>STIP-generator</artifactId>
-  <version>2.1.2</version>
+  <version>2.1.3</version>
 </dependency>
 ```
 ### pom文件中配置插件和配置文件地址
