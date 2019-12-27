@@ -55,6 +55,10 @@ public class BaseExample extends AbstractExample{
             return super.addCriterion(condition);
         }
 
+        public Criteria addCriterion(String condition, Object value) {
+            return super.addCriterion(condition, value);
+        }
+
         public Criteria addCriterion(String condition, Object value, String property) {
             return super.addCriterion(condition, value, property);
         }

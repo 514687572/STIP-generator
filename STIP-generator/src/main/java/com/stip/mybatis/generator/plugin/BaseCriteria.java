@@ -37,6 +37,12 @@ public abstract class BaseCriteria extends Criterion {
         return (BaseExample.Criteria) this;
     }
 
+    protected BaseExample.Criteria addCriterion(String condition, Object value) {
+        criteria.add(new Criterion(condition, value));
+
+        return (BaseExample.Criteria) this;
+    }
+
     protected BaseExample.Criteria addCriterion(String condition, Object value, String property) {
         if (value == null) {
             throw new RuntimeException("Value for " + property + " cannot be null");
