@@ -28,36 +28,36 @@ public abstract class BaseCriteria extends Criterion {
         return criteria;
     }
 
-    protected BaseExample.Criteria addCriterion(String condition) {
+    public BaseCriteria addCriterion(String condition) {
         if (condition == null) {
             throw new RuntimeException("Value for condition cannot be null");
         }
         criteria.add(new Criterion(condition));
 
-        return (BaseExample.Criteria) this;
+        return this;
     }
 
-    protected BaseExample.Criteria addCriterion(String condition, Object value) {
+    public BaseCriteria addCriterion(String condition, Object value) {
         criteria.add(new Criterion(condition, value));
 
-        return (BaseExample.Criteria) this;
+        return this;
     }
 
-    protected BaseExample.Criteria addCriterion(String condition, Object value, String property) {
+    public BaseCriteria addCriterion(String condition, Object value, String property) {
         if (value == null) {
             throw new RuntimeException("Value for " + property + " cannot be null");
         }
         criteria.add(new Criterion(condition, value));
 
-        return (BaseExample.Criteria) this;
+        return this;
     }
 
-    protected BaseExample.Criteria addCriterion(String condition, Object value1, Object value2, String property) {
+    public BaseCriteria addCriterion(String condition, Object value1, Object value2, String property) {
         if (value1 == null || value2 == null) {
             throw new RuntimeException("Between values for " + property + " cannot be null");
         }
         criteria.add(new Criterion(condition, value1, value2));
 
-        return (BaseExample.Criteria) this;
+        return this;
     }
 }
