@@ -33,7 +33,7 @@
         <spring.version>5.2.2.RELEASE</spring.version>
         <mybatis.version>3.5.2</mybatis.version>
         <log4j.version>1.2.27</log4j.version>
-        <ant.version>1.10.7</ant.version>
+        <ant.version>1.10.8</ant.version>
         <log4japi.version>2.12.1</log4japi.version>
         <slf4japi.version>1.7.28</slf4japi.version>
     </properties>
