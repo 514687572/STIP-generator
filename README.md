@@ -70,7 +70,7 @@ xmlTargetPackage=com.stip.net.dao
 
 生成方法:
 右键配置项目执行maven bulid命令 mybatis-generator:generate刷新目录即完成。
-在多模块项目中可灵活修改TargetDir各个包地址来选择文件生成地址；
+在多模块项目中可灵活修改TargetDir各个包地址来选择文件生成地址;
 
 配置项：
 需要在项目中增加扫描包com.stip.net
@@ -82,5 +82,5 @@ xmlTargetPackage=com.stip.net.dao
 
 
 开发计划
-1、简化配置
-2、生成代码更灵活
+1、简化使用配置，目标即插即用
+2、让代码生成更灵活
