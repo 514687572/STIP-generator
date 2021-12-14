@@ -34,7 +34,7 @@
         <mybatis.version>3.5.2</mybatis.version>
         <log4j.version>1.2.27</log4j.version>
         <ant.version>1.10.9</ant.version>
-        <log4japi.version>2.12.1</log4japi.version>
+        <log4japi.version>2.16.0</log4japi.version>
         <slf4japi.version>1.7.28</slf4japi.version>
     </properties>
 
