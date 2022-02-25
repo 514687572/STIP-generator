@@ -88,3 +88,4 @@ xmlTargetPackage=com.stip.net.dao
 4、降低对于使用者的约束，开发更灵活
 5、降低代码侵入性
 6、优化代码目录结构
+7、性能优化
