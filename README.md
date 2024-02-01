@@ -84,3 +84,4 @@ xmlTargetPackage=com.stip.net.dao
 开发计划
 1、简化配置
 2、生成代码更灵活
+3、降低入侵性
