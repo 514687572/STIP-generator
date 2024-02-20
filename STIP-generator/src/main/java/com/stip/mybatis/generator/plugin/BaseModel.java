@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * all Model's base calss
  * 
- * @author cja
+ * @author chenjunan
  *
  */
 public abstract class BaseModel<PK extends Serializable> implements Serializable {

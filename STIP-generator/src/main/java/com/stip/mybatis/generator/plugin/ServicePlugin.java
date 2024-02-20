@@ -17,7 +17,7 @@ import org.mybatis.generator.logging.LogFactory;
 /**
  * 生成 service 插件类
  * 
- * @author cja
+ * @author chenjunan
  *
  */
 public class ServicePlugin extends PluginAdapter {

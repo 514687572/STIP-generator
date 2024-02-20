@@ -28,7 +28,7 @@ import org.mybatis.generator.logging.LogFactory;
  * baseModelPackage 为生成新的类文件的包名
  * extXmlPackage 包名
  * 
- * @author cja
+ * @author chenjunan
  *
  **/
 public class ModelClassPlugin extends PluginAdapter {

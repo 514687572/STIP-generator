@@ -3,7 +3,7 @@ package com.stip.mybatis.generator.plugin;
 /**
  * all Example's base class and pager methord impl
  * 
- * @author cja
+ * @author chenjunan
  * 
  */
 public class BaseModelExample extends AbstractExample{

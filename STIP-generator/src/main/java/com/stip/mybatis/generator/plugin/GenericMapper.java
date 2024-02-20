@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 
 /**
- * @author cja
+ * @author chenjunan
  *
  * base mapper interface
  *

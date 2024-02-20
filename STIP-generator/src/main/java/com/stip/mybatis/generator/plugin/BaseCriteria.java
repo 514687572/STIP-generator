@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 
- * @author cja
+ * @author chenjunan
  *
  */
 public abstract class BaseCriteria extends Criterion {

@@ -23,7 +23,7 @@ import org.mybatis.generator.logging.LogFactory;
 /**
  * Mapper生成插件类
  * 
- * @author cja
+ * @author chenjunan
  *
  */
 public class MapperPlugin extends PluginAdapter {

@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * select condition base class
- * @author cja
+ * @author chenjunan
  *
  */
 public class Criterion {

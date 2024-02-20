@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * service抽象类
- * @author cja
+ * @author chenjunan
  *
  * @param <T> 实体类
  * @param <TE>对应example

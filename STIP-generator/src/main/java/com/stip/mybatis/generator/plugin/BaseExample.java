@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * all Example's base class and pager methord impl
  *
- * @author cja
+ * @author chenjunan
  */
 public class BaseExample extends AbstractExample{
     protected Integer pageNum;

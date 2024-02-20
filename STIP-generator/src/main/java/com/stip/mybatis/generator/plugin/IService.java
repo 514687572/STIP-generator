@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 /**
  * 共有service接口
- * @author cja
+ * @author chenjunan
  *
  * @param <T> 实体对象
  * @param <TE>对应的example

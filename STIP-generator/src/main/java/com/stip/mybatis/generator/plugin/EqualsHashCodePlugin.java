@@ -18,7 +18,7 @@ import org.mybatis.generator.internal.util.JavaBeansUtil;
  * 参考MBG的内置EqualsHashCodePlugin改造的类，
  * 可以生成只用ID来生成equals与hashCode的方式
  * 
- * @author cja
+ * @author chenjunan
  *
  */
 public class EqualsHashCodePlugin extends PluginAdapter {
