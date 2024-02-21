@@ -68,8 +68,8 @@ xmlTargetDir=./src/main/java
 xmlTargetPackage=com.stip.net.dao
 ```
 
+### 生成方法:
 ```
-生成方法:
 右键配置项目执行maven bulid命令 mybatis-generator:generate刷新目录即完成。
 在多模块项目中可灵活修改TargetDir各个包地址来选择文件生成地址；
 
@@ -81,8 +81,9 @@ xmlTargetPackage=com.stip.net.dao
 [插件源码地址](https://github.com/514687572/STIP-generator)
 
 ```
+
+### 开发计划 
 ```
---------开发计划--------------
 1、简化使用配置，终极目标即插即用
 2、使用插件生成代码更加灵活
 3、整体降低代码侵入性
@@ -91,3 +92,4 @@ xmlTargetPackage=com.stip.net.dao
 6、优化代码目录结构
 7、性能优化
 8、减少配置项，减少生成文件数量
+```
