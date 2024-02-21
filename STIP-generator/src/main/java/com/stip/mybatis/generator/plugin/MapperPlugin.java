@@ -141,7 +141,7 @@ public class MapperPlugin extends PluginAdapter {
 		Interface mapperInterface = new Interface(mapperClassName);
 		mapperInterface.setVisibility(JavaVisibility.PUBLIC);
 		mapperInterface.addJavaDocLine(" /**");
-		mapperInterface.addJavaDocLine(" * 可添加自定义查询语句，方便后续扩展");
+		mapperInterface.addJavaDocLine(" * 可自定义查询语句");
 		mapperInterface.addJavaDocLine(" **/");
 
 		introspectedTable.setExampleType(subExampleType);

@@ -324,7 +324,7 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
             sb.append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             sb.append('.');
             root.addElement(new TextElement(sb.toString()));
-            root.addElement(new TextElement("  你应该把Mapper类的扩展方法的sql语句放在这个文件里面"));
+            root.addElement(new TextElement("  自定义sql写在这个文件中  "));
 
             root.addElement(new TextElement("-->"));
             root.addElement(new TextElement(""));// 添加空白行
