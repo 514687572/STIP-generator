@@ -40,34 +40,6 @@ jdbc.password=123456
 targetPackage=com.stip.net
 targetProject=./src/main/java
 ```
-
-#### 详细版配置（自定生成包结构和输出项目路径）
-
-```
-jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost/lottery?useUnicode=true&characterEncoding=UTF-8
-jdbc.username=root
-jdbc.password=123456
-targetPackage=com.stip.net
-targetProject=./src/main/java
-
-modelTargetDir=./src/main/java
-modelTargetPackage=com.stip.net.entity
-
-exampleTargetDir=./src/main/java
-exampleTargetPackage=com.stip.net.example
-
-serviceTargetDir=./src/main/java
-serviceTargetPackage=com.stip.net.service.impl
-serviceInterfaceTargetPackage=com.stip.net.service
-
-daoTargetDir=./src/main/java
-daoTargetPackage=com.stip.net.dao
-
-xmlTargetDir=./src/main/java
-xmlTargetPackage=com.stip.net.dao
-```
-
 ### 生成方法:
 ```
 右键配置项目执行maven bulid命令 mybatis-generator:generate刷新目录即完成。
