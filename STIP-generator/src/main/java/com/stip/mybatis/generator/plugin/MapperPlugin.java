@@ -128,7 +128,7 @@ public class MapperPlugin extends PluginAdapter {
 			pkType = new FullyQualifiedJavaType("java.lang.String");
 		} else {
 			pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();// TODO:默认不考虑联合主键的情况
-			System.out.println("primaryKey Type:" + pkType);
+			logger.debug("primaryKey Type:" + pkType);
 		}
 
 		List<GeneratedJavaFile> mapperJavaFiles = new ArrayList<GeneratedJavaFile>();
