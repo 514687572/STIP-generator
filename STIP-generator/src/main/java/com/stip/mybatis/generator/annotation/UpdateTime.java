@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Author: chenjunan
  * Date: 2019/12/20 10:23
- * Content: auto add updatime
+ * Content: auto add updatime use aop
  */
 
 @Retention(RetentionPolicy.RUNTIME)
