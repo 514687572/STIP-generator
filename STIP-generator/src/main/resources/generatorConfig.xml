@@ -80,6 +80,6 @@
 		<sqlMapGenerator targetPackage="${targetPackage}" targetProject="${targetProject}">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
-		<table tableName="test" alias="test" mapperName="TestDao" domainObjectName="Test"></table>
+		<table tableName="${tableName}" ></table>
 	</context>
 </generatorConfiguration>

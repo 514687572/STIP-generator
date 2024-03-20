@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.514687572</groupId>
     <artifactId>STIP-generator</artifactId>
-    <version>2.1.5</version>
+    <version>2.2.0</version>
     <name>STIP-generator</name>
     <url>http://maven.apache.org</url>
 
@@ -32,7 +32,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring.version>5.2.22.RELEASE</spring.version>
         <mybatis.version>3.5.2</mybatis.version>
-        <log4j.version>1.2.27</log4j.version>
+        <log4j.version>1.2.17</log4j.version>
         <ant.version>1.10.9</ant.version>
         <log4japi.version>2.17.1</log4japi.version>
         <slf4japi.version>1.7.28</slf4japi.version>

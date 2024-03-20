@@ -15,6 +15,8 @@
  */
 package org.mybatis.generator.internal.util;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 /**
@@ -101,5 +103,28 @@ public class StringUtility {
         }
 
         return s.indexOf('%') != -1 || s.indexOf('_') != -1;
+    }
+
+    /**
+     * Given an input string, tokenize on the commas and trim all token. Returns an empty set if the input string is
+     * null.
+     *
+     * @param in
+     *            strong to tokenize.
+     *
+     * @return Set of tokens
+     */
+    public static Set<String> tokenize(String in) {
+        Set<String> answer = new HashSet<>();
+        if (StringUtility.stringHasValue(in)) {
+            StringTokenizer st = new StringTokenizer(in, ","); //$NON-NLS-1$
+            while (st.hasMoreTokens()) {
+                String s = st.nextToken().trim();
+                if (s.length() > 0) {
+                    answer.add(s);
+                }
+            }
+        }
+        return answer;
     }
 }

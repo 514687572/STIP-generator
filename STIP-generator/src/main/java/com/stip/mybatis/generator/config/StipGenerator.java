@@ -4,8 +4,12 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.mybatis.generator.internal.ObjectFactory;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +23,10 @@ public class StipGenerator {
         List<String> warnings = new ArrayList<String>();
         boolean overwrite = true;
 
-        File configFile = new File("generatorConfig.xml");
+        InputStream file=this.getClass().getClassLoader().getResourceAsStream("generatorConfig.xml");
         //替换ConfigurationParser
         ConfigurationParser cp = new ConfigurationParser(warnings);
-        Configuration config = cp.parseConfiguration(configFile);
+        Configuration config = cp.parseConfiguration(file);
         DefaultShellCallback callback = new DefaultShellCallback(overwrite);
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
 
