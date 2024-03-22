@@ -17,17 +17,11 @@
 <dependency>
   <groupId>com.github.514687572</groupId>
   <artifactId>STIP-generator</artifactId>
-  <version>2.1.3</version>
+  <version>2.2.0</version>
 </dependency>
 ```
-### pom文件中配置插件和配置文件地址
-```
-generator.properties配置文件和下面的这个XML配置文件都放在resources目录中
 
-[配置文件例子](https://github.com/514687572/STIP-generator/tree/master/STIP-generator/src/main/java/com/stip/mybatis/generator/example/generatorConfig.xml)
-```
-
-### generator.properties两种配置方式如下：
+### generator.properties配置方式如下：
 
 #### 简洁版配置（按照默认包名在基础包上扩展）推荐
 ```
@@ -39,11 +33,14 @@ jdbc.password=123456
 #\u7B80\u5316\u914D\u7F6E\u4E00(\u63A8\u8350)
 targetPackage=com.stip.net
 targetProject=./src/main/java
+tableName=test
 ```
 ### 生成方法:
 ```
-右键配置项目执行maven bulid命令 mybatis-generator:generate刷新目录即完成。
-在多模块项目中可灵活修改TargetDir各个包地址来选择文件生成地址；
+    public static void main(String[] args) throws Exception {
+        StipGenerator generator = new StipGenerator();
+        generator.generator();
+    }
 
 配置项：
 需要在项目中增加扫描包com.stip.net
