@@ -7,6 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedColumn;
@@ -15,10 +18,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.ShellCallback;
 import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.xml.Attribute;
-import org.mybatis.generator.api.dom.xml.Document;
-import org.mybatis.generator.api.dom.xml.TextElement;
-import org.mybatis.generator.api.dom.xml.XmlElement;
+import org.mybatis.generator.api.dom.xml.*;
 import org.mybatis.generator.codegen.XmlConstants;
 import org.mybatis.generator.codegen.mybatis3.ListUtilities;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
@@ -75,6 +75,8 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
     
     private String mapperClassName;
     
+    private Set<String> generatedMethods = new HashSet<>();
+    
     /**
 	 * 
 	 */
@@ -95,6 +97,9 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
 	
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
+        generatedMethods.clear();
+        super.initialized(introspectedTable);
+        
         // 初始化两参数为空
         modelClassName = null;
         mapperClassName=null;
@@ -161,96 +166,93 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
             }
         }
 
-        StringBuilder insertClause = new StringBuilder();
-
-        insertClause.append("insert into "); //$NON-NLS-1$
-        insertClause.append(introspectedTable.getFullyQualifiedTableNameAtRuntime());
-        insertClause.append(" ("); //$NON-NLS-1$
-
-        StringBuilder valuesClause = new StringBuilder();
-        List<String> valuesClauses = new ArrayList<String>();
-        valuesClauses.add("<foreach item='item' collection='list' separator=','  index=''>"); //$NON-NLS-1$
-        valuesClause.append(" ("); //$NON-NLS-1$
-
-        List<IntrospectedColumn> columns = ListUtilities.removeIdentityAndGeneratedAlwaysColumns(introspectedTable.getAllColumns());
-        for (int i = 0; i < columns.size(); i++) {
-            IntrospectedColumn introspectedColumn = columns.get(i);
-
-            insertClause.append(MyBatis3FormattingUtilities.getEscapedColumnName(introspectedColumn));
-            valuesClause.append(getParameterClause(introspectedColumn,"item"));
-            if (i + 1 < columns.size()) {
-                insertClause.append(", "); //$NON-NLS-1$
-                valuesClause.append(", "); //$NON-NLS-1$
-                
-                if (valuesClause.length() > 60) {
-                	valuesClauses.add(valuesClause.toString());
-                	valuesClause.setLength(0);
-                	OutputUtilities.xmlIndent(valuesClause, 1);
-                }
-                
-                if (insertClause.length() > 60) {
-                	answer.addElement(new TextElement(insertClause.toString()));
-                	insertClause.setLength(0);
-                	OutputUtilities.xmlIndent(insertClause, 1);
-                }
-            }else {
-            	valuesClause.append(") "); //$NON-NLS-1$
-            	insertClause.append(") values "); //$NON-NLS-1$
-            }
-
-        }
-
-        answer.addElement(new TextElement(insertClause.toString()));
-
-        valuesClauses.add(valuesClause.toString());
-        for (String clause : valuesClauses) {
-    		answer.addElement(new TextElement(clause));
-        }
-        
-        answer.addElement(new TextElement("</foreach>"));
+        processColumns(introspectedTable, answer);
 
         if (context.getPlugins().sqlMapInsertElementGenerated(answer,introspectedTable)) {
             parentElement.addElement(answer);
         }
     }
     
-    /**
-     * Gets the parameter clause.
-     *
-     * @param introspectedColumn
-     *            the introspected column
-     * @return the parameter clause
-     */
-    public static String getParameterClause(IntrospectedColumn introspectedColumn,String alis) {
-        return getParameterClause(introspectedColumn, null,alis);
+    private void processColumns(IntrospectedTable introspectedTable, XmlElement answer) {
+        StringBuilder insertClause = new StringBuilder();
+        StringBuilder valuesClause = new StringBuilder();
+        List<String> valuesClauses = new ArrayList<>();
+        
+        // 获取所有列,包括BLOB列
+        List<IntrospectedColumn> allColumns = introspectedTable.getAllColumns();
+        
+        // 过滤掉不需要的列
+        List<IntrospectedColumn> columns = allColumns.stream()
+            .filter(col -> !col.isIdentity()) // 过滤自增列
+            .filter(col -> !col.isGeneratedAlways()) // 过滤生成列
+            .collect(Collectors.toList());
+            
+        for (int i = 0; i < columns.size(); i++) {
+            IntrospectedColumn column = columns.get(i);
+            
+            // 处理列名,进行转义
+            String escapedColumnName = MyBatis3FormattingUtilities.getEscapedColumnName(column);
+            insertClause.append(escapedColumnName);
+            
+            // 处理参数,根据JDBC类型生成
+            String parameterClause = getParameterClause(column, "item");
+            valuesClause.append(parameterClause);
+            
+            // 处理分隔符
+            if (i + 1 < columns.size()) {
+                insertClause.append(", ");
+                valuesClause.append(", ");
+                
+                // 处理长度超过限制的情况
+                if (valuesClause.length() > 60) {
+                    valuesClauses.add(valuesClause.toString());
+                    valuesClause.setLength(0);
+                    OutputUtilities.xmlIndent(valuesClause, 1);
+                }
+                
+                if (insertClause.length() > 60) {
+                    answer.addElement(new TextElement(insertClause.toString()));
+                    insertClause.setLength(0);
+                    OutputUtilities.xmlIndent(insertClause, 1);
+                }
+            }
+        }
+        
+        // 添加最后的列
+        if (insertClause.length() > 0) {
+            answer.addElement(new TextElement(insertClause.toString()));
+        }
+        
+        // 添加最后的值
+        if (valuesClause.length() > 0) {
+            valuesClauses.add(valuesClause.toString());
+        }
+        
+        // 生成values子句
+        for (String clause : valuesClauses) {
+            answer.addElement(new TextElement(clause));
+        }
     }
 
-    /**
-     * Gets the parameter clause.
-     *
-     * @param introspectedColumn
-     *            the introspected column
-     * @param prefix
-     *            the prefix
-     * @return the parameter clause
-     */
-    public static String getParameterClause(IntrospectedColumn introspectedColumn, String prefix,String alis) {
+    private String getParameterClause(IntrospectedColumn column, String prefix) {
         StringBuilder sb = new StringBuilder();
-
-        sb.append("#{"); //$NON-NLS-1$
-        sb.append(alis);
-        sb.append(".");
-        sb.append(introspectedColumn.getJavaProperty(prefix));
-        sb.append(",jdbcType="); //$NON-NLS-1$
-        sb.append(introspectedColumn.getJdbcTypeName());
-
-        if (stringHasValue(introspectedColumn.getTypeHandler())) {
-            sb.append(",typeHandler="); //$NON-NLS-1$
-            sb.append(introspectedColumn.getTypeHandler());
+        
+        sb.append("#{");
+        sb.append(prefix);
+        sb.append('.');
+        sb.append(column.getJavaProperty());
+        
+        // 添加JDBC类型
+        if (StringUtility.stringHasValue(column.getTypeHandler())) {
+            sb.append(",typeHandler=");
+            sb.append(column.getTypeHandler());
+        } else {
+            sb.append(",jdbcType=");
+            sb.append(column.getJdbcTypeName());
         }
-
+        
         sb.append('}');
-
+        
         return sb.toString();
     }
     
@@ -366,4 +368,79 @@ public class ExtendXmlMapperPlugin extends PluginAdapter {
         return true;
 	}
 	
+	@Override
+	public boolean sqlMapSelectByExampleWithoutBLOBsElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+	    // 添加联合查询支持
+	    XmlElement joinElement = new XmlElement("if");
+	    joinElement.addAttribute(new Attribute("test", "joins != null and joins.size() > 0"));
+	    
+	    StringBuilder joinSql = new StringBuilder();
+	    joinSql.append("\n");
+	    joinSql.append("      <foreach collection=\"joins\" item=\"join\" separator=\" \">\n");
+	    joinSql.append("        ${join.toSql}\n");
+	    joinSql.append("      </foreach>\n");
+	    
+	    joinElement.addElement(new TextElement(joinSql.toString()));
+	    
+	    // 在 FROM 子句后面插入联合查询语句
+	    List<Element> elements = element.getElements();
+	    for (int i = 0; i < elements.size(); i++) {
+	        Element e = elements.get(i);
+	        if (e instanceof TextElement) {
+	            String content = ((TextElement) e).getContent();
+	            if (content.contains("from")) {
+	                elements.add(i + 1, joinElement);
+	                break;
+	            }
+	        }
+	    }
+	    
+	    return true;
+	}
+
+	@Override
+	public boolean sqlMapSelectByPrimaryKeyElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+	    // 添加联合查询支持
+	    XmlElement joinElement = new XmlElement("if");
+	    joinElement.addAttribute(new Attribute("test", "joins != null and joins.size() > 0"));
+	    
+	    StringBuilder joinSql = new StringBuilder();
+	    joinSql.append("\n");
+	    joinSql.append("      <foreach collection=\"joins\" item=\"join\" separator=\" \">\n");
+	    joinSql.append("        ${join.toSql}\n");
+	    joinSql.append("      </foreach>\n");
+	    
+	    joinElement.addElement(new TextElement(joinSql.toString()));
+	    
+	    // 在 FROM 子句后面插入联合查询语句
+	    List<Element> elements = element.getElements();
+	    for (int i = 0; i < elements.size(); i++) {
+	        Element e = elements.get(i);
+	        if (e instanceof TextElement) {
+	            String content = ((TextElement) e).getContent();
+	            if (content.contains("from")) {
+	                elements.add(i + 1, joinElement);
+	                break;
+	            }
+	        }
+	    }
+	    
+	    return true;
+	}
+
+	@Override
+	public boolean sqlMapInsertElementGenerated(XmlElement element, IntrospectedTable introspectedTable) {
+        String methodName = element.getAttributes().stream()
+            .filter(attr -> "id".equals(attr.getName()))
+            .findFirst()
+            .map(Attribute::getValue)
+            .orElse("");
+            
+        if (generatedMethods.contains(methodName)) {
+            return false; // 跳过重复生成
+        }
+        
+        generatedMethods.add(methodName);
+        return true;
+    }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+		"classpath:dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
 	<properties resource="generator.properties" />
@@ -8,7 +9,6 @@
 
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
-		<plugin type="com.stip.mybatis.generator.plugin.EqualsHashCodePlugin" />
 		<plugin type="com.stip.mybatis.generator.plugin.MysqlPaginationPlugin"/>
 		<plugin type="com.stip.mybatis.generator.plugin.BooleanColumnPlugin" />
 
@@ -61,6 +61,11 @@
 			<property name="serviceInterfaceTargetPackage" value="${serviceInterfaceTargetPackage}" />
 		</plugin>
 
+		<plugin type="com.stip.mybatis.generator.plugin.LombokPlugin">
+			<property name="useLombokPlugin" value="${useLombokPlugin}" />
+			<property name="lombokAnnotations" value="${lombokAnnotations}" />
+		</plugin>
+
 		<commentGenerator>
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
@@ -80,6 +85,6 @@
 		<sqlMapGenerator targetPackage="${targetPackage}" targetProject="${targetProject}">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
-		<table tableName="${tableName}" ></table>
+		<table catalog="${database}" tableName="${tableName}" ></table>
 	</context>
 </generatorConfiguration>

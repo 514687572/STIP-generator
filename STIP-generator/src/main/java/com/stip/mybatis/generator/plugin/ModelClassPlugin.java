@@ -1,5 +1,6 @@
 package com.stip.mybatis.generator.plugin;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -208,6 +209,26 @@ public class ModelClassPlugin extends PluginAdapter {
             }
         }
         methods.removeAll(removingMethods);
+    }
+
+    public class JoinModel {
+        private String tableName;
+        private List<String> columns;
+        private String alias;
+        
+        public void addColumn(String column) {
+            if(columns == null) {
+                columns = new ArrayList<>();
+            }
+            columns.add(column);
+        }
+        
+        public String getSelectColumns() {
+            if(columns == null || columns.isEmpty()) {
+                return "*";
+            }
+            return String.join(",", columns);
+        }
     }
 
 }

@@ -1,23 +1,19 @@
 package com.stip.mybatis.generator.plugin;
 
-import java.util.HashSet;
-import java.util.List;
-
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.Field;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.InnerClass;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.TopLevelClass;
-import org.mybatis.generator.config.JavaModelGeneratorConfiguration;
+import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.internal.util.StringUtility;
 import org.mybatis.generator.logging.Log;
 import org.mybatis.generator.logging.LogFactory;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 /**
- * 
  * 定制部分mybatis的插件，主要实现以下功能
  * <ol>
  * <li>生成Example的文件</li>
@@ -26,12 +22,11 @@ import org.mybatis.generator.logging.LogFactory;
  * 使用方法配置与在generatorConfig.xml中其中
  * baseModelNamePrefix 为新生成的类文件的前置关键字
  * baseModelPackage 为生成新的类文件的包名
- * 
- * @author chenjunan
  *
+ * @author chenjunan
  **/
 public class ExampleClassPlugin extends PluginAdapter {
-	public static Log logger = LogFactory.getLog(ExampleClassPlugin.class);
+    public static Log logger = LogFactory.getLog(ExampleClassPlugin.class);
     public final static String DEFAULT_BASE_MODEL_PACKAGE = "";
     public final static String DEFAULT_BASE_MODEL_NAME_PREFIX = "";
 
@@ -55,11 +50,11 @@ public class ExampleClassPlugin extends PluginAdapter {
      * Model类的前缀名称
      */
     private String exampleTargetPackage;
-    
+
     private String exampleTargetProject;
-    
-    private String baseExamplePackageName=".example";
-    
+
+    private String baseExamplePackageName = ".example";
+
     /**
      * Model类文件包名
      */
@@ -75,6 +70,11 @@ public class ExampleClassPlugin extends PluginAdapter {
      */
     private String modelClassName;
     private String exampleClassName;
+
+    /**
+     * 添加新的属性
+     */
+    private String queryBuilderClass;
 
     public ExampleClassPlugin() {
         try {
@@ -96,111 +96,85 @@ public class ExampleClassPlugin extends PluginAdapter {
 
         FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
         modelClassName = modelJavaType.getShortName();
-        
-        exampleClassName=exampleTargetPackage+"."+modelClassName+"Example";
+
+        exampleClassName = exampleTargetPackage + "." + modelClassName + "Example";
         introspectedTable.setExampleType(exampleClassName);
     }
 
     /*
      * 检查xml参数是否正确
-     * 
+     *
      * @see org.mybatis.generator.api.Plugin#validate(java.util.List)
      */
     public boolean validate(List<String> warnings) {
-/*        logger.debug("开始：validate");
-
-        baseModelNamePrefix = properties.getProperty("baseModelNamePrefix");
-        if (!StringUtility.stringHasValue(baseModelNamePrefix)) {
-            baseModelNamePrefix = DEFAULT_BASE_MODEL_NAME_PREFIX;
-        }
-
-        exampleTargetPackage = properties.getProperty("exampleTargetPackage");
-        if (!StringUtility.stringHasValue(exampleTargetPackage)) {
-        	exampleTargetPackage = properties.getProperty("targetPackage");
-            if (!StringUtility.stringHasValue(exampleTargetPackage)) {
-                return false;
-            }else {
-            	exampleTargetPackage+=baseExamplePackageName;
-            }
-        }
-        
-        exampleTargetProject = properties.getProperty("exampleTargetDir");
-        if (!StringUtility.stringHasValue(exampleTargetProject)) {
-        	exampleTargetProject = properties.getProperty("targetProject");
-        	if (!StringUtility.stringHasValue(exampleTargetProject)) {
-        		return false;
-        	}
-        }
-
-        String baseExamplePackage = properties.getProperty("baseExamplePackage");
-        if (StringUtility.stringHasValue(baseExamplePackage)) {
-            fullModelPackage = exampleTargetPackage + "." + baseExamplePackage;
-        } else {
-            fullModelPackage = exampleTargetPackage + "." + DEFAULT_BASE_MODEL_PACKAGE;
-        }
-
-        String baseExampleSuperClazz = properties.getProperty("baseExampleSuperClass");
-        if (StringUtility.stringHasValue(baseExampleSuperClazz)) {
-            baseExampleSuperClass = baseExampleSuperClazz;
-        }
-
-        String baseCriteriaSuperClazz = properties.getProperty("baseCriteriaSuperClass");
-        if (StringUtility.stringHasValue(baseCriteriaSuperClazz)) {
-            baseCriteriaSuperClass = baseCriteriaSuperClazz;
-        }*/
-
+        // 获取自定义查询构建器配置
+        queryBuilderClass = properties.getProperty("queryBuilderClass");
         return true;
     }
 
-/*    @Override
     public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        logger.debug("开始：修改Example文件");
+        // 添加联合查询支持
+        addJoinSupport(topLevelClass);
         
-        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
-        javaModelGeneratorConfiguration.setTargetPackage(exampleTargetPackage);
-        javaModelGeneratorConfiguration.setTargetProject(exampleTargetProject);
-        introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
-
-        // 添加example基类
-        topLevelClass.addImportedType(new FullyQualifiedJavaType(baseExampleSuperClassName));
-        topLevelClass.setSuperClass(baseExampleSuperClass);
-        
-        clearExampleCLass(topLevelClass);
-
-        HashSet<InnerClass> removingInnerClasses = new HashSet<InnerClass>();
-
-        // 处理example的所有内部类
-        List<InnerClass> innerClasses = topLevelClass.getInnerClasses();
-        for (InnerClass innerClass : innerClasses) {
-
-            FullyQualifiedJavaType type = innerClass.getType();
-            String innerClassName = type.getFullyQualifiedName();
-            System.out.println("fullyQualifiedName:" + innerClassName);
-
-            if ("Criterion".equals(innerClassName)) {// 删除example的Criterion静态类
-                removingInnerClasses.add(innerClass);
-
-            } else if ("GeneratedCriteria".equals(innerClassName)) {// 改造GeneratedCriteria类，添加一个基类
-                // innerClass.setAbstract(false);
-
-                // 添加Criteria基类
-                topLevelClass.addImportedType(new FullyQualifiedJavaType(baseCriteriaSuperClassName));
-                innerClass.setSuperClass(baseCriteriaSuperClass);
-
-                clearGeneratedCriteriaClass(innerClass);
-            }
+        // 保留原有的查询构建器支持
+        if (StringUtility.stringHasValue(queryBuilderClass)) {
+            topLevelClass.addImportedType(queryBuilderClass);
+            addQueryBuilderSupport(topLevelClass);
         }
+        return true;
+    }
 
-        innerClasses.removeAll(removingInnerClasses);
+    private void addQueryBuilderSupport(TopLevelClass topLevelClass) {
+        // 添加查询构建器字段
+        Field queryBuilderField = new Field("queryBuilder", new FullyQualifiedJavaType("CustomQueryBuilder"));
+        queryBuilderField.setVisibility(JavaVisibility.PRIVATE);
+        topLevelClass.addField(queryBuilderField);
 
-        logger.debug("完成：修改Example文件");
+        // 添加设置查询构建器的方法
+        Method setQueryBuilder = new Method("setQueryBuilder");
+        setQueryBuilder.setVisibility(JavaVisibility.PUBLIC);
+        setQueryBuilder.addParameter(new Parameter(new FullyQualifiedJavaType("CustomQueryBuilder"), "queryBuilder"));
+        setQueryBuilder.addBodyLine("this.queryBuilder = queryBuilder;");
+        topLevelClass.addMethod(setQueryBuilder);
 
-        return super.modelExampleClassGenerated(topLevelClass, introspectedTable);
-    }*/
+        // 添加新的查询方法
+        addCustomQueryMethods(topLevelClass);
+    }
+
+    private void addCustomQueryMethods(TopLevelClass topLevelClass) {
+        // 添加分组查询方法
+        Method groupBy = new Method("groupBy");
+        groupBy.setVisibility(JavaVisibility.PUBLIC);
+        groupBy.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "groupByClause"));
+        groupBy.addBodyLine("if (queryBuilder != null) {");
+        groupBy.addBodyLine("    this.groupByClause = queryBuilder.buildGroupBy(groupByClause);");
+        groupBy.addBodyLine("}");
+        topLevelClass.addMethod(groupBy);
+
+        // 添加Having查询方法
+        Method having = new Method("having");
+        having.setVisibility(JavaVisibility.PUBLIC);
+        having.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "havingClause"));
+        having.addBodyLine("if (queryBuilder != null) {");
+        having.addBodyLine("    this.havingClause = queryBuilder.buildHaving(havingClause);");
+        having.addBodyLine("}");
+        topLevelClass.addMethod(having);
+
+        // 添加复杂条件查询方法
+        Method addComplexCriteria = new Method("addComplexCriteria");
+        addComplexCriteria.setVisibility(JavaVisibility.PUBLIC);
+        addComplexCriteria.addParameter(new Parameter(new FullyQualifiedJavaType("Object"), "condition"));
+        addComplexCriteria.addBodyLine("if (queryBuilder != null) {");
+        addComplexCriteria.addBodyLine("    Criteria criteria = createCriteriaInternal();");
+        addComplexCriteria.addBodyLine("    queryBuilder.addCustomCriteria(criteria, condition);");
+        addComplexCriteria.addBodyLine("    oredCriteria.add(criteria);");
+        addComplexCriteria.addBodyLine("}");
+        topLevelClass.addMethod(addComplexCriteria);
+    }
 
     /**
      * 清理Example的多余属性与方法，已经迁移到父类了
-     * 
+     *
      * @param topLevelClass
      */
     private static void clearExampleCLass(TopLevelClass topLevelClass) {
@@ -241,7 +215,7 @@ public class ExampleClassPlugin extends PluginAdapter {
 
     /**
      * 清理GeneratedCriteria的多余属性与方法，已经迁移到父类了
-     * 
+     *
      * @param innerClass
      */
     private static void clearGeneratedCriteriaClass(InnerClass innerClass) {
@@ -275,4 +249,131 @@ public class ExampleClassPlugin extends PluginAdapter {
         methods.removeAll(removingMethods);
     }
 
+    // 添加联合查询相关的内部类
+    private static class JoinClause {
+        private String joinType = "LEFT JOIN";
+        private String tableName;
+        private String alias;
+        private String condition;
+        
+        public JoinClause(String tableName, String condition) {
+            this.tableName = tableName;
+            this.condition = condition;
+        }
+        
+        public String toSql() {
+            return String.format("%s %s %s ON %s", 
+                joinType, 
+                tableName, 
+                alias != null ? alias : "", 
+                condition);
+        }
+    }
+
+    // 添加 JoinCriteria 内部类
+    private static class JoinCriteria {
+        private String joinType = "LEFT JOIN";
+        private String tableName;
+        private String condition;
+        private List<String> columns;
+
+        public JoinCriteria(String tableName, String condition) {
+            this.tableName = tableName;
+            this.condition = condition;
+            this.columns = new ArrayList<>();
+        }
+
+        public void addColumn(String column) {
+            if (columns == null) {
+                columns = new ArrayList<>();
+            }
+            columns.add(column);
+        }
+
+        public String toSql() {
+            return String.format("%s %s ON %s", joinType, tableName, condition);
+        }
+
+        public String getSelectColumns() {
+            if (columns == null || columns.isEmpty()) {
+                return tableName + ".*";
+            }
+            return String.join(",", columns.stream()
+                    .map(col -> tableName + "." + col)
+                    .collect(Collectors.toList()));
+        }
+    }
+
+    private void addJoinSupport(TopLevelClass topLevelClass) {
+        // 添加需要的导入
+        topLevelClass.addImportedType("java.util.ArrayList");
+        topLevelClass.addImportedType("java.util.List");
+        topLevelClass.addImportedType("java.util.stream.Collectors");
+
+        // 添加 joins 字段
+        Field joinsField = new Field("joins", new FullyQualifiedJavaType("List<JoinCriteria>"));
+        joinsField.setVisibility(JavaVisibility.PRIVATE);
+        joinsField.setInitializationString("new ArrayList<>()");
+        topLevelClass.addField(joinsField);
+
+        // 添加 leftJoin 方法
+        Method leftJoin = new Method("leftJoin");
+        leftJoin.setVisibility(JavaVisibility.PUBLIC);
+        leftJoin.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "tableName"));
+        leftJoin.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "condition"));
+        leftJoin.setReturnType(topLevelClass.getType());
+        leftJoin.addBodyLine("JoinCriteria join = new JoinCriteria(tableName, condition);");
+        leftJoin.addBodyLine("join.joinType = \"LEFT JOIN\";");
+        leftJoin.addBodyLine("joins.add(join);");
+        leftJoin.addBodyLine("return this;");
+        topLevelClass.addMethod(leftJoin);
+
+        // 添加 rightJoin 方法
+        Method rightJoin = new Method("rightJoin");
+        rightJoin.setVisibility(JavaVisibility.PUBLIC);
+        rightJoin.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "tableName"));
+        rightJoin.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "condition"));
+        rightJoin.setReturnType(topLevelClass.getType());
+        rightJoin.addBodyLine("JoinCriteria join = new JoinCriteria(tableName, condition);");
+        rightJoin.addBodyLine("join.joinType = \"RIGHT JOIN\";");
+        rightJoin.addBodyLine("joins.add(join);");
+        rightJoin.addBodyLine("return this;");
+        topLevelClass.addMethod(rightJoin);
+
+        // 添加 innerJoin 方法
+        Method innerJoin = new Method("innerJoin");
+        innerJoin.setVisibility(JavaVisibility.PUBLIC);
+        innerJoin.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "tableName"));
+        innerJoin.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "condition"));
+        innerJoin.setReturnType(topLevelClass.getType());
+        innerJoin.addBodyLine("JoinCriteria join = new JoinCriteria(tableName, condition);");
+        innerJoin.addBodyLine("join.joinType = \"INNER JOIN\";");
+        innerJoin.addBodyLine("joins.add(join);");
+        innerJoin.addBodyLine("return this;");
+        topLevelClass.addMethod(innerJoin);
+
+        // 添加 select 方法用于指定查询字段
+        Method select = new Method("select");
+        select.setVisibility(JavaVisibility.PUBLIC);
+        select.addParameter(new Parameter(new FullyQualifiedJavaType("String"), "tableName"));
+        select.addParameter(new Parameter(new FullyQualifiedJavaType("String..."), "columns"));
+        select.setReturnType(topLevelClass.getType());
+        select.addBodyLine("joins.stream()");
+        select.addBodyLine("    .filter(join -> join.tableName.equals(tableName))");
+        select.addBodyLine("    .findFirst()");
+        select.addBodyLine("    .ifPresent(join -> {");
+        select.addBodyLine("        for (String column : columns) {");
+        select.addBodyLine("            join.addColumn(column);");
+        select.addBodyLine("        }");
+        select.addBodyLine("    });");
+        select.addBodyLine("return this;");
+        topLevelClass.addMethod(select);
+
+        // 添加获取 joins 的方法
+        Method getJoins = new Method("getJoins");
+        getJoins.setVisibility(JavaVisibility.PUBLIC);
+        getJoins.setReturnType(new FullyQualifiedJavaType("List<JoinCriteria>"));
+        getJoins.addBodyLine("return joins;");
+        topLevelClass.addMethod(getJoins);
+    }
 }
