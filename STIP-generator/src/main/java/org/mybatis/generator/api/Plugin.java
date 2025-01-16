@@ -1098,8 +1098,8 @@ public interface Plugin {
      *         first plugin returning false will disable the calling of further
      *         plugins.
      */
-/*    boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
-            IntrospectedTable introspectedTable);*/
+    boolean modelExampleClassGenerated(TopLevelClass topLevelClass,
+            IntrospectedTable introspectedTable);
 
     /**
      * This method is called when the SqlMap file has been generated.

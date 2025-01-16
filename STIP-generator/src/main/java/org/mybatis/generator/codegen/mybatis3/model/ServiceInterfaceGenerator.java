@@ -47,37 +47,23 @@ public class ServiceInterfaceGenerator extends AbstractJavaGenerator {
     @Override
     public List<CompilationUnit> getCompilationUnits() {
         FullyQualifiedTable table = introspectedTable.getFullyQualifiedTable();
-        progressCallback.startTask(getString("Progress.8", table.toString())); //$NON-NLS-1$
+        progressCallback.startTask(getString("Progress.8", table.toString()));
         Plugin plugins = context.getPlugins();
         CommentGenerator commentGenerator = context.getCommentGenerator();
 
-        FullyQualifiedJavaType type = new FullyQualifiedJavaType(introspectedTable.getBaseInterfaceType());
-        Interface topLevelClass = new Interface(type);
-        topLevelClass.setVisibility(JavaVisibility.PUBLIC);
-        commentGenerator.addJavaFileComment(topLevelClass);
+        // 创建接口
+        FullyQualifiedJavaType type = new FullyQualifiedJavaType(
+            introspectedTable.getBaseInterfaceType()
+        );
+        Interface interfaze = new Interface(type);
+        interfaze.setVisibility(JavaVisibility.PUBLIC);
         
-        FullyQualifiedJavaType superClass = getSuperClass();
-        if (superClass != null) {
-            topLevelClass.addSuperInterface(superClass);
-            topLevelClass.addImportedType(superClass);
-        }
+        // 不添加默认的文件注释，由插件处理
+        // commentGenerator.addJavaFileComment(interfaze);
 
-        List<IntrospectedColumn> introspectedColumns = introspectedTable.getAllColumns();
-
-        if (introspectedTable.isConstructorBased()) {
-            addParameterizedConstructor(topLevelClass);
-        }
-
-        String rootClass = getRootClass();
-        for (IntrospectedColumn introspectedColumn : introspectedColumns) {
-            if (RootClassInfo.getInstance(rootClass, warnings).containsProperty(introspectedColumn)) {
-                continue;
-            }
-        }
-        
-        List<CompilationUnit> answer = new ArrayList<CompilationUnit>();
-        if (context.getPlugins().serviceInterfaceGenerated(topLevelClass,introspectedTable)) {
-            answer.add(topLevelClass);
+        List<CompilationUnit> answer = new ArrayList<>();
+        if (context.getPlugins().serviceInterfaceGenerated(interfaze, introspectedTable)) {
+            answer.add(interfaze);
         }
         
         return answer;

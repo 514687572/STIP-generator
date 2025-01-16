@@ -7,6 +7,8 @@
 
 	<context id="mysqlMap" targetRuntime="MyBatis3">
 
+		<property name="xmlFormatter" value="com.stip.mybatis.generator.formatter.CustomXmlFormatter"/>
+
 		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
 		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
 		<plugin type="com.stip.mybatis.generator.plugin.MysqlPaginationPlugin"/>
@@ -27,6 +29,9 @@
 			<property name="exampleTargetPackage" value="${exampleTargetPackage}" />
 			<property name="xmlTargetPackage" value="${xmlTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
+			<property name="enableXmlFormat" value="true"/>
+			<property name="enableCache" value="true"/>
+			<property name="enableComments" value="true"/>
 		</plugin>
 
 		<plugin type="com.stip.mybatis.generator.plugin.ModelClassPlugin">
@@ -43,7 +48,7 @@
 			<property name="daoTargetPackage" value="${daoTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
-		
+
 		<plugin type="com.stip.mybatis.generator.plugin.ServiceInterfacePlugin">
 			<property name="targetProject" value="${targetProject}" />
 			<property name="targetPackage" value="${targetPackage}" />
@@ -51,7 +56,7 @@
 			<property name="serviceInterfaceTargetPackage" value="${serviceInterfaceTargetPackage}" />
 			<property name="modelTargetPackage" value="${modelTargetPackage}" />
 		</plugin>
-		
+
 		<plugin type="com.stip.mybatis.generator.plugin.ServicePlugin">
 			<property name="targetProject" value="${targetProject}" />
 			<property name="targetPackage" value="${targetPackage}" />
@@ -71,20 +76,22 @@
 		</commentGenerator>
 
 		<jdbcConnection driverClass="${jdbc.driverClassName}" connectionURL="${jdbc.url}" userId="${jdbc.username}" password="${jdbc.password}" />
-		
+
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
-		
+
 		<!--domain 代码 生成路径 -->
-		<javaModelGenerator targetPackage="${targetPackage}" targetProject="${targetProject}"> 
+		<javaModelGenerator targetPackage="${targetPackage}" targetProject="${targetProject}">
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
-		
+
 		<!--mapper 代码 生成路径 -->
 		<sqlMapGenerator targetPackage="${targetPackage}" targetProject="${targetProject}">
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<table catalog="${database}" tableName="${tableName}" ></table>
+
+
 	</context>
 </generatorConfiguration>

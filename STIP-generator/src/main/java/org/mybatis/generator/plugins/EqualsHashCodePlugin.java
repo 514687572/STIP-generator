@@ -104,6 +104,11 @@ public class EqualsHashCodePlugin extends PluginAdapter {
         return true;
     }
 
+    @Override
+    public boolean modelExampleClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        return false;
+    }
+
     /**
      * Generates an <tt>equals</tt> method that does a comparison of all fields.
      * 

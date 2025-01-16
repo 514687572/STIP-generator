@@ -1,43 +1,80 @@
 package com.stip.mybatis.generator.plugin;
 
-/**
- * all Example's base class and pager methord impl
- * 
- * @author chenjunan
- * 
- */
-public class BaseModelExample extends AbstractExample{
-	protected Integer pageNum;
-	protected Integer records;
-	protected Integer fromRowNum;
-	protected Integer toRowNum;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class BaseModelExample extends AbstractExample {
 	protected String orderByClause;
+	protected String groupByClause;
+	protected String havingClause;
 	protected boolean distinct;
-	protected Integer defaultRecords=10;
-	
-	/**
-	 * 
-	 * @param pageNum 
-	 * @param records one of zhe page records
-	 */
-	public void setPager(int pageNum,int records){
-		if(pageNum<=0||records<0){
-			throw new IllegalStateException("pageNum must>0 or records must >0");
-		}
-		this.setFromRowNum(records * (pageNum - 1));
-		this.setToRowNum(records);
+	protected List<Criteria> oredCriteria;
+
+	public BaseModelExample() {
+		oredCriteria = new ArrayList<Criteria>();
 	}
-	
-	/**
-	 * default 10 records of one page
-	 * @param pageNum 
-	 */
-	public void setPager(int pageNum){
-		if(pageNum<=0){
-			throw new IllegalStateException("pageNum must>0");
+
+	protected abstract static class GeneratedCriteria {
+		protected List<Criterion> criteria;
+	}
+
+	public static class Criterion {
+		private String condition;
+		private Object value;
+		private Object secondValue;
+		private boolean noValue;
+		private boolean singleValue;
+		private boolean betweenValue;
+		private boolean listValue;
+
+		protected Criterion(String condition) {
+			this.condition = condition;
+			this.noValue = true;
 		}
-		this.setFromRowNum(defaultRecords * (pageNum - 1));
-		this.setToRowNum(defaultRecords);
+
+		public String getCondition() {
+			return condition;
+		}
+
+		public Object getValue() {
+			return value;
+		}
+
+		public Object getSecondValue() {
+			return secondValue;
+		}
+
+		public boolean isNoValue() {
+			return noValue;
+		}
+
+		public boolean isSingleValue() {
+			return singleValue;
+		}
+
+		public boolean isBetweenValue() {
+			return betweenValue;
+		}
+
+		public boolean isListValue() {
+			return listValue;
+		}
+	}
+
+	protected Criteria createCriteriaInternal() {
+		return new Criteria();
+	}
+
+	public void or(Criteria criteria) {
+		oredCriteria.add(criteria);
+	}
+
+	public Criteria createCriteria() {
+		Criteria criteria = createCriteriaInternal();
+		if (oredCriteria.size() == 0) {
+			oredCriteria.add(criteria);
+		}
+		return criteria;
 	}
 
 	public void setOrderByClause(String orderByClause) {
@@ -48,6 +85,22 @@ public class BaseModelExample extends AbstractExample{
 		return orderByClause;
 	}
 
+	public void setGroupByClause(String groupByClause) {
+		this.groupByClause = groupByClause;
+	}
+
+	public String getGroupByClause() {
+		return groupByClause;
+	}
+
+	public void setHavingClause(String havingClause) {
+		this.havingClause = havingClause;
+	}
+
+	public String getHavingClause() {
+		return havingClause;
+	}
+
 	public void setDistinct(boolean distinct) {
 		this.distinct = distinct;
 	}
@@ -56,25 +109,20 @@ public class BaseModelExample extends AbstractExample{
 		return distinct;
 	}
 
-	public void clear() {
-		orderByClause = null;
-		distinct = false;
-	}
+	public static class Criteria {
+		protected List<Criterion> criteria;
 
-	public Integer getFromRowNum() {
-		return fromRowNum;
-	}
+		protected Criteria() {
+			super();
+			criteria = new ArrayList<Criterion>();
+		}
 
-	public void setFromRowNum(Integer fromRowNum) {
-		this.fromRowNum = fromRowNum;
-	}
+		public List<Criterion> getCriteria() {
+			return criteria;
+		}
 
-	public Integer getToRowNum() {
-		return toRowNum;
+		protected void addCriterion(String condition) {
+			criteria.add(new Criterion(condition));
+		}
 	}
-
-	public void setToRowNum(Integer toRowNum) {
-		this.toRowNum = toRowNum;
-	}
-
 }

@@ -68,56 +68,72 @@ public class ServiceInterfacePlugin extends PluginAdapter {
 
     @Override
     public void initialized(IntrospectedTable introspectedTable) {
-    	// 初始化两参数为空
-    	serviceInterfaceName = null;
+        // 初始化参数
+        serviceInterfaceName = null;
 
-    	FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
-        serviceInterfaceName = modelJavaType.getShortName();
-        serviceInterfaceName=serviceInterfaceTargetPackage+"."+serviceInterfaceName+"Service";
-        introspectedTable.setBaseInterfaceType(serviceInterfaceName);
+        // 获取实体类名和包名
+        FullyQualifiedJavaType modelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
+        String shortName = modelJavaType.getShortName();
+        String basePackage = modelJavaType.getPackageName();
+        
+        // 如果包名包含.entity，则去掉entity及之后的部分
+        if (basePackage.contains(".entity")) {
+            basePackage = basePackage.substring(0, basePackage.lastIndexOf(".entity"));
+        }
+        
+        // 设置service接口包名
+        serviceInterfaceTargetPackage = basePackage + ".service";
+        
+        // 设置完整的接口名
+        serviceInterfaceName = shortName + "Service";
+        
+        // 设置接口的完整限定名
+        String fullInterfaceName = serviceInterfaceTargetPackage + "." + serviceInterfaceName;
+        introspectedTable.setBaseInterfaceType(fullInterfaceName);
     }
     
+    @Override
     public boolean serviceInterfaceGenerated(Interface serviceInterface, IntrospectedTable introspectedTable) {
-        logger.debug("开始：修改service文件");
+        // 清除默认生成的内容
+        serviceInterface.getMethods().clear();
+        serviceInterface.getAnnotations().clear();
         
-        JavaModelGeneratorConfiguration javaModelGeneratorConfiguration = new JavaModelGeneratorConfiguration();
-        javaModelGeneratorConfiguration.setTargetPackage(serviceInterfaceTargetPackage);
-        javaModelGeneratorConfiguration.setTargetProject(serviceTargetDir);
-        introspectedTable.getContext().setJavaModelGeneratorConfiguration(javaModelGeneratorConfiguration);
+        // 获取实体类名
+        String domainObjectName = introspectedTable.getFullyQualifiedTable().getDomainObjectName();
+
+        // 添加类注释
+        serviceInterface.addJavaDocLine("/**");
+        serviceInterface.addJavaDocLine(" * Service Interface for " + domainObjectName);
+        serviceInterface.addJavaDocLine(" *");
+        serviceInterface.addJavaDocLine(" * @author STIP Generator");
+        serviceInterface.addJavaDocLine(" */");
+
+        // 添加必要的导入
+        serviceInterface.addImportedType(new FullyQualifiedJavaType("com.stip.mybatis.generator.plugin.IService"));
+        serviceInterface.addImportedType(new FullyQualifiedJavaType(introspectedTable.getBaseRecordType()));
+        serviceInterface.addImportedType(new FullyQualifiedJavaType("com.stip.mybatis.generator.plugin.BaseExample"));
         
-        FullyQualifiedJavaType superClazzType = new FullyQualifiedJavaType(baseServiceSuperClass);
-        FullyQualifiedJavaType superClazzTypeName = new FullyQualifiedJavaType(baseServiceSuperClassName);
+        // 获取主键类型
+        FullyQualifiedJavaType pkType;
+        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+        if (primaryKeyColumns.isEmpty()) {
+            pkType = new FullyQualifiedJavaType("java.lang.String");
+        } else {
+            pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();
+        }
         
-		serviceInterface.setVisibility(JavaVisibility.PUBLIC);
-		serviceInterface.addJavaDocLine(" /**");
-		serviceInterface.addJavaDocLine(" * Extensible custom interface");
-		serviceInterface.addJavaDocLine(" **/");
-		
-		FullyQualifiedJavaType pkType = null;
-		List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
-		if (primaryKeyColumns.isEmpty()) {
-			pkType = new FullyQualifiedJavaType("java.lang.String");
-		} else {
-			pkType = primaryKeyColumns.get(0).getFullyQualifiedJavaType();
-			System.out.println("primaryKey Type:" + pkType);
-		}
-		
-		FullyQualifiedJavaType subModelJavaType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
-		serviceInterface.addImportedType(subModelJavaType);
-		FullyQualifiedJavaType subModelExampleJavaType = new FullyQualifiedJavaType(DEFAULT_EXAMPLE_CLASS_NAME);
-		serviceInterface.addImportedType(subModelExampleJavaType);
-		
-		// 添加泛型支持
-		superClazzType.addTypeArgument(subModelJavaType);
-		superClazzType.addTypeArgument(subModelExampleJavaType);
-		superClazzType.addTypeArgument(pkType);
-		
-		serviceInterface.addSuperInterface(superClazzType);
-		serviceInterface.addImportedType(superClazzTypeName);
+        // 构建泛型接口
+        FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType(
+            String.format("IService<%s, %s, %s>",
+                domainObjectName,
+                "BaseExample",
+                pkType.getShortName()
+            )
+        );
         
-		logger.debug("完成：修改service文件");
-		
-        return super.serviceInterfaceGenerated(serviceInterface, introspectedTable);
+        serviceInterface.addSuperInterface(superInterface);
+        
+        return true;
     }
 
 }
