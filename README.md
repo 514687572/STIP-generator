@@ -28,12 +28,13 @@
 
 ### Maven 依赖
 
-xml
+```xml
 <dependency>
     <groupId>com.github.514687572</groupId>
     <artifactId>STIP-generator</artifactId>
     <version>3.0.0</version>
 </dependency>
+```
 
 ### 配置插件
 
