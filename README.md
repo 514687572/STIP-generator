@@ -1,187 +1,128 @@
-# STIP MyBatis Generator
+# STIP MyBatis Generator Plugin
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.514687572/STIP-generator.svg)](https://search.maven.org/artifact/com.github.514687572/STIP-generator)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Build Status](https://travis-ci.org/stip/mybatis-generator-plugin.svg?branch=master)](https://travis-ci.org/stip/mybatis-generator-plugin)
 
-STIP MyBatis Generator是一个强大的代码生成器插件，基于MyBatis Generator开发，提供了丰富的功能扩展和优化，帮助开发者快速生成标准化的MyBatis相关代码。
+一个强大的 MyBatis Generator 增强插件，提供了丰富的扩展功能和灵活的查询支持。
 
-## ✨ 特性
+## 特性
 
-- 🚀 **一键生成完整代码**
-  - Model实体类（支持Lombok）
-  - Mapper接口（内置CRUD方法）
-  - XML映射文件（完整SQL映射）
-  - Service接口及实现类
-  - Example查询类
+- 🚀 强大的查询功能
+  - JOIN 查询支持 (LEFT/RIGHT/INNER)
+  - 动态条件构建
+  - 分组和 Having 子句
+  - 子查询支持
+  
+- 📦 代码生成增强
+  - 继承体系完善
+  - 自动清理冗余代码
+  - XML 映射文件格式化
+  - 缓存配置支持
 
-- 💡 **智能化增强**
-  - Lombok注解支持（@Data, @Builder等）
-  - 支持Example类的继承和定制
-  - 支持Model类的继承和定制
-  - XML文件的扩展和覆盖控制
-  - Service层代码生成
+- 🎨 优雅的 API 设计
+  - 链式调用风格
+  - 类型安全的查询
+  - 灵活的条件组装
 
-## 📦 安装
+## 快速开始
 
-在项目的`pom.xml`中添加依赖：
+### Maven 依赖
 
-```xml
+xml
 <dependency>
     <groupId>com.github.514687572</groupId>
     <artifactId>STIP-generator</artifactId>
     <version>3.0.0</version>
 </dependency>
-```
 
-## 🚀 快速开始
+### 配置插件
 
-### 1. 创建配置文件
+在 generatorConfig.xml 中添加:
 
-在`src/main/resources`目录下创建`generator.properties`：
-
-```properties
-# 数据库配置
-jdbc.driverClassName=com.mysql.cj.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost:3306/your_database?useSSL=false&serverTimezone=UTC
-jdbc.username=your_username
-jdbc.password=your_password
-
-# 代码生成配置
-tableName=your_table_name
-basePackage=com.your.package
-```
-
-### 2. 运行生成器
-
-```bash
-mvn mybatis-generator:generate
-```
-
-## 📋 配置说明
-
-### 基础配置
-
-| 配置项 | 说明 | 默认值 | 是否必填 |
-|--------|------|--------|----------|
-| jdbc.driverClassName | 数据库驱动类名 | com.mysql.cj.jdbc.Driver | 是 |
-| jdbc.url | 数据库连接URL | - | 是 |
-| jdbc.username | 数据库用户名 | - | 是 |
-| jdbc.password | 数据库密码 | - | 是 |
-| tableName | 要生成的表名 | - | 是 |
-| basePackage | 基础包名 | - | 是 |
-
-### 高级配置
-
-| 配置项 | 说明 | 默认值 |
-|--------|------|--------|
-| removeTablePrefix | 是否去除表前缀 | false |
-| useLombokPlugin | 是否使用Lombok | true |
-| useSwaggerPlugin | 是否使用Swagger | true |
-| generateExampleClass | 是否生成Example类 | true |
-| generateBatchInsert | 是否生成批量插入 | true |
-
-完整配置示例请参考：[generator.properties.template](src/main/resources/generator.properties.template)
-
-## 🎯 生成的代码结构
-
-```
-src/main/java
-├── model                    # 实体类
-│   └── UserModel.java
-├── mapper                   # Mapper接口
-│   └── UserMapper.java
-├── service                  # Service接口
-│   └── UserService.java
-├── service.impl            # Service实现类
-│   └── UserServiceImpl.java
-└── xml                     # MyBatis XML文件
-    └── UserMapper.xml
-```
-
-## 💡 最佳实践
-
-### 1. 实体类生成
-
-使用Lombok简化代码：
-```properties
-useLombokPlugin=true
-lombokAnnotations=Data,Builder,NoArgsConstructor,AllArgsConstructor,EqualsAndHashCode
-```
-
-### 2. 表名处理
-
-去除表前缀：
-```properties
-removeTablePrefix=true
-tablePrefix=t_
-```
-
-### 3. API文档
-
-启用Swagger注解：
-```properties
-useSwaggerPlugin=true
-swaggerVersion=2.0
-```
-
-## 🔨 扩展开发
-
-1. 创建自定义插件
+### 基础用法
 ```java
-public class CustomPlugin extends PluginAdapter {
+// 创建查询对象
+UserExample example = new UserExample();
+// 添加查询条件
+example.createCriteria()
+.andNameLike("%张%")
+.andAgeBetween(20, 30);
+// 执行查询
+List<User> users = userMapper.selectByExample(example);
+```
+### JOIN 查询
+
+```java
+UserExample example = new UserExample();
+example.leftJoin("department", "department.id = user.department_id")
+      .select("department", "name as deptName")
+      .createCriteria()
+      .andDeletedEqualTo(false);
+```
+
+### 分组统计
+
+```java
+UserExample example = new UserExample();
+example.groupBy("department_id")
+      .having("count(*) > 5");
+```
+
+## 插件列表
+
+### ExampleClassPlugin
+- Example 类生成增强
+- 继承关系处理
+- 查询条件构建
+
+### ExtendXmlMapperPlugin  
+- XML 映射文件增强
+- 缓存配置支持
+- 结果映射生成
+
+### ModelClassPlugin
+- 实体类生成增强
+- 字段注释保留
+- 类型转换优化
+
+## 进阶使用
+
+### 自定义查询构建器
+
+```java
+public class MyQueryBuilder implements CustomQueryBuilder {
     @Override
-    public boolean validate(List<String> warnings) {
-        return true;
+    public String buildGroupBy(String groupByClause) {
+        return "GROUP BY " + groupByClause;
+    }
+    
+    @Override
+    public String buildHaving(String havingClause) {
+        return "HAVING " + havingClause;
     }
 }
+
+// 使用自定义构建器
+example.setQueryBuilder(new MyQueryBuilder());
 ```
 
-2. 在generatorConfig.xml中注册
-```xml
-<plugin type="com.your.package.CustomPlugin">
-    <property name="customProperty" value="customValue"/>
-</plugin>
-```
+## 最佳实践
 
-## 📝 更新日志
+1. 优先使用基础查询方法
+2. 合理使用 JOIN，避免过多表关联
+3. 适当使用查询构建器组装复杂条件
+4. 保持生成代码的简洁性
 
-### 3.0.0 (2024-01-15)
-- 新增Lombok插件支持，简化实体类代码
-- 优化Example类生成逻辑
-- 增强XML映射文件的可定制性
-- 完善Service层代码生成
-- 修复已知问题
+## 版本要求
 
-## 🤝 贡献指南
+- JDK 1.8+
+- MyBatis Generator 1.3.7+
+- MyBatis 3.4.0+
 
-1. Fork 本仓库
-2. 创建特性分支：`git checkout -b feature/AmazingFeature`
-3. 提交改动：`git commit -m 'Add some AmazingFeature'`
-4. 推送分支：`git push origin feature/AmazingFeature`
-5. 提交Pull Request
+## 贡献指南
 
-## 📄 开源协议
+欢迎提交 Pull Request 和 Issue。
 
-本项目采用 [Apache 2.0 协议](LICENSE)。 
+## 许可证
 
-### 2. ExampleClassPlugin
-- 生成增强的Example查询类
-- 支持继承自定义基类
-- 优化查询条件构建
-- 支持自定义包名和类名前缀
-
-### 3. ModelClassPlugin
-- 实体类生成增强
-- 支持继承自定义基类
-- 支持自定义属性和方法
-- 支持包名和类名定制
-
-### 4. ExtendXmlMapperPlugin
-- XML映射文件增强
-- 支持自定义命名空间
-- 控制文件覆盖行为
-- 支持扩展SQL定义
-
-## 🚀 配置示例
-
-完整的配置示例: 
+[Apache License 2.0](LICENSE)
