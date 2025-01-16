@@ -1,0 +1,85 @@
+# ===== 数据库连接配置 =====
+# 数据库驱动类名
+jdbc.driverClassName=com.mysql.cj.jdbc.Driver
+# 数据库连接URL
+jdbc.url=jdbc:mysql://localhost:3306/your_database?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+# 数据库用户名
+jdbc.username=your_username
+# 数据库密码
+jdbc.password=your_password
+
+# ===== 代码生成配置 =====
+# 要生成代码的表名，支持通配符，如：user_*
+tableName=your_table_name
+# 生成的实体类是否去除表前缀，如：表名user_info -> 类名Info
+removeTablePrefix=false
+# 表前缀(生成的类名不会包含该前缀)
+tablePrefix=
+
+# ===== 包路径配置 =====
+# 基础包路径
+basePackage=com.your.package
+# Model类包路径
+modelTargetPackage=${basePackage}.model
+# Mapper接口包路径
+daoTargetPackage=${basePackage}.dao
+# Service接口包路径
+serviceInterfaceTargetPackage=${basePackage}.service
+# Service实现类包路径
+serviceTargetPackage=${basePackage}.service.impl
+# XML映射文件包路径
+xmlTargetPackage=mapper
+# Example类包路径
+exampleTargetPackage=${basePackage}.example
+
+# ===== 输出目录配置 =====
+# 基础输出目录
+targetProject=src/main/java
+# Model类输出目录
+modelTargetDir=${targetProject}
+# Mapper接口输出目录
+daoTargetDir=${targetProject}
+# Service接口和实现类输出目录
+serviceTargetDir=${targetProject}
+# Example类输出目录
+exampleTargetDir=${targetProject}
+
+# ===== 生成规则配置 =====
+# 是否生成字段常量
+generateColumnConsts=true
+# 是否生成字段的getter/setter方法
+generateGetterSetter=true
+# 是否生成数据库字段注释
+generateRemarks=true
+# 是否生成带有Example的方法
+generateExampleClass=true
+# 是否生成基础的CRUD方法
+generateBaseColumns=true
+# 是否生成批量插入方法
+generateBatchInsert=true
+# 是否生成乐观锁支持
+generateOptimisticLock=false
+# 乐观锁字段名
+optimisticLockColumn=version
+
+# ===== Lombok配置 =====
+# 是否使用Lombok注解
+useLombokPlugin=true
+# 使用的Lombok注解
+lombokAnnotations=Data,Builder,NoArgsConstructor,AllArgsConstructor
+
+# ===== Swagger配置 =====
+# 是否使用Swagger注解
+useSwaggerPlugin=true
+# Swagger API版本
+swaggerVersion=2.0
+
+# ===== 其他配置 =====
+# 是否覆盖已有文件
+overwrite=true
+# 是否生成序列化接口
+serializable=true
+# 是否生成toString方法
+toString=true
+# 是否生成equals和hashCode方法
+equalsHashCode=true 

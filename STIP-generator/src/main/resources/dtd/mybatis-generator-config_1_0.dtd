@@ -1,0 +1,136 @@
+<!--
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!ELEMENT generatorConfiguration (properties?, classPathEntry*, context+)>
+
+<!ELEMENT properties EMPTY>
+<!ATTLIST properties
+  resource CDATA #IMPLIED
+  url CDATA #IMPLIED>
+  
+<!ELEMENT classPathEntry EMPTY>
+<!ATTLIST classPathEntry
+  location CDATA #REQUIRED>
+
+<!ELEMENT context (property*, plugin*, commentGenerator?, (connectionFactory | jdbcConnection), javaTypeResolver?,
+                  javaModelGenerator, sqlMapGenerator?, javaClientGenerator?, table+)>
+<!ATTLIST context
+  id ID #REQUIRED
+  defaultModelType CDATA #IMPLIED
+  targetRuntime CDATA #IMPLIED
+  introspectedColumnImpl CDATA #IMPLIED>
+
+<!ELEMENT connectionFactory (property*)>
+<!ATTLIST connectionFactory
+  type CDATA #IMPLIED>
+
+<!ELEMENT jdbcConnection (property*)>
+<!ATTLIST jdbcConnection 
+  driverClass CDATA #REQUIRED
+  connectionURL CDATA #REQUIRED
+  userId CDATA #IMPLIED
+  password CDATA #IMPLIED>
+
+<!ELEMENT javaTypeResolver (property*)>
+<!ATTLIST javaTypeResolver
+  type CDATA #IMPLIED>
+
+<!ELEMENT javaModelGenerator (property*)>
+<!ATTLIST javaModelGenerator
+  targetPackage CDATA #REQUIRED
+  targetProject CDATA #REQUIRED>
+
+<!ELEMENT sqlMapGenerator (property*)>
+<!ATTLIST sqlMapGenerator
+  targetPackage CDATA #REQUIRED
+  targetProject CDATA #REQUIRED>
+
+<!ELEMENT javaClientGenerator (property*)>
+<!ATTLIST javaClientGenerator
+  type CDATA #REQUIRED
+  targetPackage CDATA #REQUIRED
+  targetProject CDATA #REQUIRED
+  implementationPackage CDATA #IMPLIED>
+
+<!ELEMENT table (property*, generatedKey?, columnRenamingRule?, (columnOverride | ignoreColumn | ignoreColumnsByRegex)*) >
+<!ATTLIST table
+  catalog CDATA #IMPLIED
+  schema CDATA #IMPLIED
+  tableName CDATA #REQUIRED
+  alias CDATA #IMPLIED
+  domainObjectName CDATA #IMPLIED
+  mapperName CDATA #IMPLIED
+  sqlProviderName CDATA #IMPLIED
+  enableInsert CDATA #IMPLIED
+  enableSelectByPrimaryKey CDATA #IMPLIED
+  enableSelectByExample CDATA #IMPLIED
+  enableUpdateByPrimaryKey CDATA #IMPLIED
+  enableDeleteByPrimaryKey CDATA #IMPLIED
+  enableDeleteByExample CDATA #IMPLIED
+  enableCountByExample CDATA #IMPLIED
+  enableUpdateByExample CDATA #IMPLIED
+  selectByPrimaryKeyQueryId CDATA #IMPLIED
+  selectByExampleQueryId CDATA #IMPLIED
+  modelType CDATA #IMPLIED
+  escapeWildcards CDATA #IMPLIED
+  delimitIdentifiers CDATA #IMPLIED
+  delimitAllColumns CDATA #IMPLIED>
+
+<!ELEMENT columnOverride (property*)>
+<!ATTLIST columnOverride
+  column CDATA #REQUIRED
+  property CDATA #IMPLIED
+  javaType CDATA #IMPLIED
+  jdbcType CDATA #IMPLIED
+  typeHandler CDATA #IMPLIED
+  isGeneratedAlways CDATA #IMPLIED
+  delimitedColumnName CDATA #IMPLIED>
+
+<!ELEMENT ignoreColumn EMPTY>
+<!ATTLIST ignoreColumn
+  column CDATA #REQUIRED
+  delimitedColumnName CDATA #IMPLIED>
+
+<!ELEMENT ignoreColumnsByRegex (except*)>
+<!ATTLIST ignoreColumnsByRegex
+  pattern CDATA #REQUIRED>
+
+<!ELEMENT except EMPTY>
+<!ATTLIST except
+  column CDATA #REQUIRED
+  delimitedColumnName CDATA #IMPLIED>
+
+<!ELEMENT generatedKey EMPTY>
+<!ATTLIST generatedKey
+  column CDATA #REQUIRED
+  sqlStatement CDATA #REQUIRED
+  identity CDATA #IMPLIED
+  type CDATA #IMPLIED>
+
+<!ELEMENT columnRenamingRule EMPTY>
+<!ATTLIST columnRenamingRule
+  searchString CDATA #REQUIRED
+  replaceString CDATA #IMPLIED>
+
+<!ELEMENT plugin (property*)>
+<!ATTLIST plugin
+  type CDATA #REQUIRED>
+
+<!ELEMENT property EMPTY>
+<!ATTLIST property
+  name CDATA #REQUIRED
+  value CDATA #REQUIRED>
+
+<!ELEMENT commentGenerator (property*)>
+<!ATTLIST commentGenerator
+  type CDATA #IMPLIED> 
